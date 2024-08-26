@@ -1,2 +1,3 @@
 class GeometryProperties:
-    pass
+    radius = 1.
+    geometry_context = None

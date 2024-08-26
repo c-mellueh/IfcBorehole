@@ -27,10 +27,10 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         df.insert(len(df.columns), column_name, value)
 
     @classmethod
-    def add_stratum(cls, borehole_id: str, name: str, attributes: dict[str, Any]):
+    def add_stratum(cls, borehole_id: str, name: str, attributes: dict[str, Any], shape: int = 0):
         df = cls.get_dataframe()
         columns = list(df)
-        df.loc[len(df)] = [None for _ in columns]
+        df.loc[len(df)] = pd.Series()
         df.at[len(df), BOREHOLE_ID] = borehole_id
         df.at[len(df), NAME] = name
         for name, value in attributes.items():
@@ -40,3 +40,8 @@ class Stratum(boreholeCreator.core.tool.Stratum):
                 columns = list(df)
             index = columns.index(name)
             df.at[len(df), index] = value
+
+    @classmethod
+    def get_stratums_by_borehole_id(cls, borehole_id: str) -> pd.DataFrame:
+        stratum_df = cls.get_dataframe()
+        return stratum_df[stratum_df[BOREHOLE_ID] == borehole_id]

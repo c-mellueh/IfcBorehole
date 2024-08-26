@@ -21,3 +21,4 @@ class IfcProperties:
     project: ifcopenshell.entity_instance = None
     geometric_representation_context: ifcopenshell.entity_instance = None
     site: ifcopenshell.entity_instance = None
+    pset_base_name = "DefaultPset"

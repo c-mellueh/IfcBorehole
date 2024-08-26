@@ -1,12 +1,18 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-import boreholeCreator.core.tool
-import boreholeCreator
-import time
-import ifcopenshell
-import ifcopenshell.guid
-import uuid
+
+import logging
 import tempfile
+import time
+import uuid
+from typing import Any, TYPE_CHECKING
+
+import ifcopenshell
+import ifcopenshell.api
+import ifcopenshell.guid
+import pandas as pd
+
+import boreholeCreator
+import boreholeCreator.core.tool
 from boreholeCreator import tool
 
 if TYPE_CHECKING:
@@ -117,3 +123,85 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     @classmethod
     def get_geometric_representation_context(cls):
         return cls._get_ifc_entity("IfcGeometricRepresentationContext","geometric_representation_context")
+
+    @classmethod
+    def create_pset_dict(cls, row: pd.Series, ignored_collumns) -> dict[str, dict[str, Any]]:
+        pset_dict = dict()
+        pset_base_name = cls.get_properties().pset_base_name
+        for attribute_name, value in row.items():
+            if attribute_name in ignored_collumns:
+                continue
+            if pd.isna(value):
+                value = None
+            name = str(attribute_name).split(":")
+            if len(name) < 2:
+                name = [pset_base_name, attribute_name]
+            elif name > 2:
+                logging.warning(
+                    f"Attributename '{attribute_name}' contains too much ':'  to be splitted correctly -> take first 2 values")
+                name = name[:2]
+            if pset_dict.get(name[0]) is None:
+                pset_dict[name[0]] = dict()
+            pset_dict[name[0]][name[1]] = value
+        return pset_dict
+
+    @classmethod
+    def add_attributes(cls, entity: ifcopenshell.entity_instance, data: dict[str, dict[str, Any]]):
+        ifcfile = cls.get_ifcfile()
+        owner_history = cls.get_owner_history()
+        for pset_name, attribute_dict in data.items():
+            pset = ifcopenshell.api.run("pset.add_pset", ifcfile, product=entity, name=pset_name)
+            relation = pset.DefinesOccurrence[0]
+            relation.OwnerHistory = owner_history
+            pset.OwnerHistory = owner_history
+            ifcopenshell.api.run("pset.edit_pset", ifcfile, pset=pset, properties=attribute_dict)
+
+    @classmethod
+    def create_borehole(cls, row: pd.Series, borehole_placement, shape):
+        from boreholeCreator.module.borehole.prop import IFC_TYPE, NAME, ID, BOREHOLE_BASICS
+        ifcfile = cls.get_ifcfile()
+
+        ifcborehole = ifcfile.create_entity(row[IFC_TYPE],
+                                            GlobalId=cls.create_guid(),
+                                            OwnerHistory=cls.get_owner_history(),
+                                            Name=row[NAME],
+                                            Description="Auto Generated",
+                                            ObjectPlacement=borehole_placement,
+                                            Tag=row[ID],
+                                            Representation=shape)
+
+        data = cls.create_pset_dict(row, BOREHOLE_BASICS)
+        cls.add_attributes(ifcborehole, data)
+        return ifcborehole
+
+    @classmethod
+    def create_stratum(cls, shape, row: pd.Series, borehole_placement):
+        from boreholeCreator.module.stratum.prop import NAME, Z, IFC_TYPE, ID, STRATUM_BASICS
+        name = row[NAME]
+        local_pos = 0.0, 0., row[Z]
+        ifcfile = cls.get_ifcfile()
+        owner_history = cls.get_owner_history()
+        placement = tool.Location.create_ifclocalplacement(ifcfile, local_pos, relative_to=borehole_placement)
+        stratum = ifcfile.create_entity(row[IFC_TYPE],
+                                        GlobalId=cls.create_guid(),
+                                        OwnerHistory=owner_history,
+                                        Name=name,
+                                        Description="Auto Generated",
+                                        ObjectPlacement=placement,
+                                        Representation=shape,
+                                        Tag=row[ID], )
+        stratum.OwnerHistory = owner_history
+        pset_dict = cls.create_pset_dict(row, STRATUM_BASICS)
+        cls.add_attributes(stratum, pset_dict)
+        return stratum
+
+    @classmethod
+    def assign_stratums_to_borehole(cls, borehole, stratums_list):
+        ifcfile = cls.get_ifcfile()
+        ifcopenshell.api.run("aggregate.assign_object", ifcfile, products=[stratums_list], relating_object=borehole)
+
+    @classmethod
+    def assign_entities_to_site(cls, entities: list[ifcopenshell.entity_instance]):
+        ifcfile = cls.get_ifcfile()
+        site = cls.get_site()
+        ifcopenshell.api.run("spatial.assign_container", ifcfile, products=entities, relating_structure=site)

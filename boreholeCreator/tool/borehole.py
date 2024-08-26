@@ -4,7 +4,7 @@ from typing import Any
 import pandas as pd
 
 import boreholeCreator.core.tool
-from boreholeCreator.module.borehole.prop import BoreholeProperties, ID, NAME
+from boreholeCreator.module.borehole.prop import BoreholeProperties, ID, NAME, X, Y, Z
 
 
 class Borehole(boreholeCreator.core.tool.Borehole):
@@ -26,16 +26,31 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         df.insert(len(df.columns), column_name, value)
 
     @classmethod
-    def add_borehole(cls, borehole_id: str, name: str, attributes: dict[str, Any]):
+    def add_borehole(cls, borehole_id: str, name: str, attributes: dict[str, Any],
+                     coordinates: tuple[float, float, float | None]):
         df = cls.get_dataframe()
         columns = list(df)
-        df.loc[len(df)] = [None for _ in columns]
-        df.at[len(df), ID] = borehole_id
-        df.at[len(df), NAME] = name
+        row = len(df)
+        df.loc[row] = [None for _ in columns]
+        df.at[row, ID] = borehole_id
+        df.at[row, NAME] = name
         for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
                 cls.add_column(name)
                 columns = list(df)
-            index = columns.index(name)
-            df.at[len(df), index] = value
+            column = columns.index(name)
+            df.at[row, column] = value
+
+        df.at[row][X] = coordinates[0]
+        df.at[row][Y] = coordinates[1]
+        df.at[row][Z] = coordinates[2]
+
+    @classmethod
+    def get_position(cls, row: pd.Series):
+        return row[X], row[Y], row[Z]
+
+    @classmethod
+    def create_stratum(cls, row: pd.Series, borehole_placement):
+        from boreholeCreator.module.stratum import trigger
+        return trigger.create_stratum(row, borehole_placement)
