@@ -12,6 +12,7 @@ modules = {
     "stratum":  [None, "stratum"],
     "styling":  [None, "styling"],
     "geometry": [None,"geometry"],
+    "ifc": [None, "ifc"],
 }
 
 for key, (_, name) in modules.items():
@@ -21,3 +22,5 @@ for key, (_, name) in modules.items():
 def register():
     for k, (mod, _) in modules.items():
         mod.register()
+
+register()
