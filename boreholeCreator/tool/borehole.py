@@ -53,20 +53,24 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         return row[prop.X], row[prop.Y], row[prop.Z]
 
     @classmethod
-    def create_stratum(cls, row: pd.Series, borehole_placement):
+    def create_stratum(cls, row: pd.Series, stratum_index: int, borehole_placement):
         from boreholeCreator.module.stratum import trigger
-        return trigger.create_stratum(row, borehole_placement)
+        return trigger.create_stratum(row, stratum_index, borehole_placement)
 
     @classmethod
     def get_required_collumns(cls) -> list[str]:
-        return prop.BOREHOLE_BASICS
+        return prop.BOREHOLE_REQUIRED
 
     @classmethod
     def is_dataframe_filled(cls):
         df = list(cls.get_dataframe())
+        for col_name, default in prop.BOREHOLE_OPTIONAL.items():
+            if col_name not in df:
+                cls.add_column(col_name, default)
+
         for col_name in cls.get_required_collumns():
             if col_name not in df:
-                logging.error(f"Column '{col_name}' not found in Borehole dataframe'")
+                logging.error(f"Column '{col_name}' not found in Borehole dataframe")
                 return False
         return True
 
@@ -90,4 +94,5 @@ class Borehole(boreholeCreator.core.tool.Borehole):
 
     @classmethod
     def reset_dataframe(cls):
-        cls.get_properties().borehole_dataframe = pd.DataFrame({k: [] for k in prop.BOREHOLE_BASICS})
+        cls.get_properties().borehole_dataframe = pd.DataFrame(
+            {k: [] for k in prop.BOREHOLE_REQUIRED + list(prop.BOREHOLE_OPTIONAL.keys())})

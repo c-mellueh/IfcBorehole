@@ -1,3 +1,5 @@
 import boreholeCreator.core.tool
 class Styling(boreholeCreator.core.tool.Styling):
-    pass
+    @classmethod
+    def style_entities(cls):
+        pass

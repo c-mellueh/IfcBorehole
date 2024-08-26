@@ -1,12 +1,27 @@
 import pandas as pd
 
-BOREHOLE_BASICS = ["borehole_id", "borehole_name", "x_pos", "y_pos", "z_pos", "ifc_type", "height"]
-ID = BOREHOLE_BASICS[0]
-NAME = BOREHOLE_BASICS[1]
-X = BOREHOLE_BASICS[2]
-Y = BOREHOLE_BASICS[3]
-Z = BOREHOLE_BASICS[4]
-IFC_TYPE = BOREHOLE_BASICS[5]
-HEIGHT = BOREHOLE_BASICS[6]
+ID = "borehole_id"
+NAME = "borehole_name"
+X = "x_pos"
+Y = "y_pos"
+Z = "z_pos"
+IFC_TYPE = "ifc_type"
+HEIGHT = "height"
+IFC_GUID = "ifc_guid"
+BOREHOLE_REQUIRED = [ID, NAME, X, Y, Z, IFC_TYPE, HEIGHT, IFC_GUID]
+
+RED = "red"
+GREEN = "green"
+BLUE = "blue"
+TRANSPARENCY = "transparency"
+
+BOREHOLE_OPTIONAL = {RED:          0.5,  # Key & Default Value
+                     GREEN:        0.5,
+                     BLUE:         0.5,
+                     TRANSPARENCY: 0.}
+
+
+
+
 class BoreholeProperties:
-    borehole_dataframe: pd.DataFrame = pd.DataFrame({k: [] for k in BOREHOLE_BASICS})
+    borehole_dataframe: pd.DataFrame = pd.DataFrame({k: [] for k in BOREHOLE_REQUIRED + list(BOREHOLE_OPTIONAL.keys())})
