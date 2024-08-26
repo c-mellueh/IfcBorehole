@@ -158,40 +158,40 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def create_borehole(cls, row: pd.Series, borehole_placement, shape):
-        from boreholeCreator.module.borehole.prop import IFC_TYPE, NAME, ID, BOREHOLE_REQUIRED
+        from boreholeCreator.module.borehole import prop
         ifcfile = cls.get_ifcfile()
 
-        ifcborehole = ifcfile.create_entity(row[IFC_TYPE],
+        ifcborehole = ifcfile.create_entity(row[prop.IFC_TYPE],
                                             GlobalId=cls.create_guid(),
                                             OwnerHistory=cls.get_owner_history(),
-                                            Name=row[NAME],
+                                            Name=row[prop.NAME],
                                             Description="Auto Generated",
                                             ObjectPlacement=borehole_placement,
-                                            Tag=row[ID],
+                                            Tag=row[prop.ID],
                                             Representation=shape)
 
-        data = cls.create_pset_dict(row, BOREHOLE_REQUIRED)
+        data = cls.create_pset_dict(row, prop.BOREHOLE_REQUIRED + list(prop.BOREHOLE_OPTIONAL.keys()))
         cls.add_attributes(ifcborehole, data)
         return ifcborehole
 
     @classmethod
     def create_stratum(cls, shape, row: pd.Series, borehole_placement):
-        from boreholeCreator.module.stratum.prop import NAME, Z, IFC_TYPE, ID, STRATUM_REQUIRED
-        name = row[NAME]
-        local_pos = 0.0, 0., row[Z]
+        from boreholeCreator.module.stratum import prop
+        name = row[prop.NAME]
+        local_pos = 0.0, 0., row[prop.Z]
         ifcfile = cls.get_ifcfile()
         owner_history = cls.get_owner_history()
         placement = tool.Location.create_ifclocalplacement(ifcfile, local_pos, relative_to=borehole_placement)
-        stratum = ifcfile.create_entity(row[IFC_TYPE],
+        stratum = ifcfile.create_entity(row[prop.IFC_TYPE],
                                         GlobalId=cls.create_guid(),
                                         OwnerHistory=owner_history,
                                         Name=str(name),
                                         Description="Auto Generated",
                                         ObjectPlacement=placement,
                                         Representation=shape,
-                                        Tag=row[ID], )
+                                        Tag=row[prop.ID], )
         stratum.OwnerHistory = owner_history
-        pset_dict = cls.create_pset_dict(row, STRATUM_REQUIRED)
+        pset_dict = cls.create_pset_dict(row, prop.STRATUM_REQUIRED + list(prop.STRATUM_OPTIONAL.keys()))
         cls.add_attributes(stratum, pset_dict)
         return stratum
 
