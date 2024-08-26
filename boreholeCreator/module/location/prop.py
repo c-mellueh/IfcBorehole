@@ -1,0 +1,2 @@
+class LocationProperties:
+    pass

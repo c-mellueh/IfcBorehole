@@ -1,0 +1,2 @@
+class MainProperties:
+    pass
