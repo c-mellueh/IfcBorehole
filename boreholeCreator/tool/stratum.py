@@ -31,7 +31,7 @@ class Stratum(boreholeCreator.core.tool.Stratum):
                     attributes: dict[str, Any], ifc_type: str = "IfcBuildingElementProxy", shape: int = 0):
         df = cls.get_dataframe()
         columns = list(df)
-        row = len(columns)
+        row = len(df)
         df.loc[row] = pd.Series()
         df.at[row, prop.BOREHOLE_ID] = borehole_id
         df.at[row, prop.NAME] = name
@@ -64,3 +64,7 @@ class Stratum(boreholeCreator.core.tool.Stratum):
                 logging.error(f"Column '{col_name}' not found in Stratum dataframe'")
                 return False
         return True
+
+    @classmethod
+    def reset_dataframe(cls):
+        cls.get_properties().stratum_dataframe = pd.DataFrame({k: [] for k in prop.STRATUM_BASICS})

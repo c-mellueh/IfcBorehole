@@ -11,10 +11,11 @@ def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum])
     ifc_boreholes = list()
     for index, row in borehole_dataframe.iterrows():
         stratums = stratum.get_stratums_by_borehole_id(row[prop.ID])
-        if stratums:
-            ifc_boreholes.append(borehole.create_nested_borehole(row, stratums))
-        else:
+        if stratums.empty:
             ifc_boreholes.append(borehole.create_unnested_boreholes(row))
+
+        else:
+            ifc_boreholes.append(borehole.create_nested_borehole(row, stratums))
     return ifc_boreholes
 
 
@@ -38,6 +39,6 @@ def create_unnested_borehole(borehole_row: pd.Series, borehole: Type[tool.Boreho
                              ifc: Type[tool.Ifc], location: Type[tool.Location]):
     pos = borehole.get_position(borehole_row)
     placement = location.create_ifclocalplacement(ifc.get_ifcfile(), pos, relative_to=location.get_site_placement())
-    shape = geometry.create_cylinder(borehole_row[prop.NAME], borehole[prop.HEIGHT])
+    shape = geometry.create_cylinder(borehole_row[prop.NAME], borehole_row[prop.HEIGHT])
     ifc_borehole = ifc.create_borehole(borehole_row, placement, shape)
     return ifc_borehole

@@ -5,7 +5,6 @@ import pandas as pd
 
 import boreholeCreator.core.tool
 from boreholeCreator.module.borehole import prop
-from boreholeCreator.module.borehole import trigger
 
 
 class Borehole(boreholeCreator.core.tool.Borehole):
@@ -31,23 +30,22 @@ class Borehole(boreholeCreator.core.tool.Borehole):
                      attributes: dict[str, Any], height: float, ifc_type: str = "IfcBuildingElementProxy"):
         df = cls.get_dataframe()
         columns = list(df)
-        row = len(columns)
+        row = len(df)
         df.loc[row] = [None for _ in columns]
         df.at[row, prop.ID] = borehole_id
         df.at[row, prop.NAME] = name
         df.at[row, prop.HEIGHT] = height
         df.at[row, prop.IFC_TYPE] = ifc_type
-        df.at[row][prop.X] = coordinates[0]
-        df.at[row][prop.Y] = coordinates[1]
-        df.at[row][prop.Z] = coordinates[2]
+        df.at[row, prop.X] = coordinates[0]
+        df.at[row, prop.Y] = coordinates[1]
+        df.at[row, prop.Z] = coordinates[2]
 
         for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
                 cls.add_column(name)
                 columns = list(df)
-            column = columns.index(name)
-            df.at[row, column] = value
+            df.at[row, name] = value
 
 
     @classmethod
@@ -74,12 +72,22 @@ class Borehole(boreholeCreator.core.tool.Borehole):
 
     @classmethod
     def create_nested_borehole(cls, borehole_row, stratums_df):
+        from boreholeCreator.module.borehole import trigger
+
         return trigger.create_nested_borehole(borehole_row, stratums_df)
 
     @classmethod
     def create_unnested_boreholes(cls, borehole_row):
+        from boreholeCreator.module.borehole import trigger
+
         return trigger.create_unnested_borehole(borehole_row)
 
     @classmethod
     def create_boreholes(cls):
+        from boreholeCreator.module.borehole import trigger
+
         return trigger.create_boreholes()
+
+    @classmethod
+    def reset_dataframe(cls):
+        cls.get_properties().borehole_dataframe = pd.DataFrame({k: [] for k in prop.BOREHOLE_BASICS})

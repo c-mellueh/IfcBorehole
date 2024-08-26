@@ -136,7 +136,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
             name = str(attribute_name).split(":")
             if len(name) < 2:
                 name = [pset_base_name, attribute_name]
-            elif name > 2:
+            elif len(name) > 2:
                 logging.warning(
                     f"Attributename '{attribute_name}' contains too much ':'  to be splitted correctly -> take first 2 values")
                 name = name[:2]
@@ -150,6 +150,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         ifcfile = cls.get_ifcfile()
         owner_history = cls.get_owner_history()
         for pset_name, attribute_dict in data.items():
+            print(attribute_dict)
             pset = ifcopenshell.api.run("pset.add_pset", ifcfile, product=entity, name=pset_name)
             relation = pset.DefinesOccurrence[0]
             relation.OwnerHistory = owner_history
@@ -198,7 +199,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     @classmethod
     def assign_stratums_to_borehole(cls, borehole, stratums_list):
         ifcfile = cls.get_ifcfile()
-        ifcopenshell.api.run("aggregate.assign_object", ifcfile, products=[stratums_list], relating_object=borehole)
+        ifcopenshell.api.run("aggregate.assign_object", ifcfile, products=stratums_list, relating_object=borehole)
 
     @classmethod
     def assign_entities_to_site(cls, entities: list[ifcopenshell.entity_instance]):
