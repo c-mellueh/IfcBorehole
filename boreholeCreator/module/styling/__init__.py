@@ -1,4 +1,4 @@
 import boreholeCreator
 from . import prop
- register():
-    som_gui.StylingProperties = prop.StylingProperties()
+def register():
+    boreholeCreator.StylingProperties = prop.StylingProperties()
