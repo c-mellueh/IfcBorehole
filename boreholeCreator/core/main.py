@@ -12,4 +12,5 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
     ifc.create_ifc_site(site_placement)
     boreholes = borehole.create_boreholes()
     ifc.assign_entities_to_site(boreholes)
+    styling.style_entities()
     file.write(output_path)

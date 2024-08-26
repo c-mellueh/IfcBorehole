@@ -96,3 +96,13 @@ class Borehole(boreholeCreator.core.tool.Borehole):
     def reset_dataframe(cls):
         cls.get_properties().borehole_dataframe = pd.DataFrame(
             {k: [] for k in prop.BOREHOLE_REQUIRED + list(prop.BOREHOLE_OPTIONAL.keys())})
+
+    @classmethod
+    def add_missing_collumns(cls):
+        df = cls.get_dataframe()
+        for col_name, default in prop.BOREHOLE_OPTIONAL.items():
+            if not col_name in df:
+                cls.add_column(col_name, default)
+        for col_name in prop.BOREHOLE_REQUIRED:
+            if not col_name in df:
+                cls.add_column(col_name)
