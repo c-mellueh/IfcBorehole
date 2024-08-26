@@ -1,2 +1,2 @@
 class LocationProperties:
-    pass
+    site_position = [0.,0.,0.] #Global Site Positioning
