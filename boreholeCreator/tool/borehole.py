@@ -1,11 +1,10 @@
 import logging
+from typing import Any
 
 import pandas as pd
 
 import boreholeCreator.core.tool
 from boreholeCreator.module.borehole.prop import BoreholeProperties
-from typing import Any
-
 
 
 class Borehole(boreholeCreator.core.tool.Borehole):
@@ -18,17 +17,17 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         return cls.get_properties().borehole_dataframe
 
     @classmethod
-    def add_column(cls,column_name:str,value = None):
+    def add_column(cls, column_name: str, value=None):
         df = cls.get_borehold_df()
-        df.insert(len(df.columns),column_name,value)
+        df.insert(len(df.columns), column_name, value)
 
     @classmethod
-    def add_borehole(cls,id:str,name:str,attributes:dict[str,Any]):
+    def add_borehole(cls, borehole_id: str, name: str, attributes: dict[str, Any]):
         df = cls.get_borehold_df()
         columns = list(df)
         row = [None for _ in columns]
-        row[0],row[1]  = id,name
-        for name,value in attributes.items():
+        row[0], row[1] = borehole_id, name
+        for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
                 cls.add_column(name)
