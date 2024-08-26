@@ -1,2 +1,6 @@
+import pandas as pd
+ID = "borehole_id"
+NAME = "borehole_name"
+
 class BoreholeProperties:
-    pass
+    borehole_dataframe: pd.DataFrame = pd.DataFrame({ID: [], NAME: []})
