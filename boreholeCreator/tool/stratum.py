@@ -27,19 +27,25 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         df.insert(len(df.columns), column_name, value)
 
     @classmethod
-    def add_stratum(cls, borehole_id: str, name: str, attributes: dict[str, Any], shape: int = 0):
+    def add_stratum(cls, borehole_id: str, name: str, height: float, stratum_id: str, z_pos: float,
+                    attributes: dict[str, Any], ifc_type: str = "IfcBuildingElementProxy", shape: int = 0):
         df = cls.get_dataframe()
         columns = list(df)
-        df.loc[len(df)] = pd.Series()
-        df.at[len(df), prop.BOREHOLE_ID] = borehole_id
-        df.at[len(df), prop.NAME] = name
+        row = len(columns)
+        df.loc[row] = pd.Series()
+        df.at[row, prop.BOREHOLE_ID] = borehole_id
+        df.at[row, prop.NAME] = name
+        df.at[row, prop.SHAPE] = shape
+        df.at[row, prop.IFC_TYPE] = ifc_type
+        df.at[row, prop.HEIGHT] = height
+        df.at[row, prop.ID] = stratum_id
+        df.at[row, prop.Z] = z_pos
         for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
                 cls.add_column(name)
                 columns = list(df)
-            index = columns.index(name)
-            df.at[len(df), index] = value
+            df.at[len(df), columns.index(name)] = value
 
     @classmethod
     def get_stratums_by_borehole_id(cls, borehole_id: str) -> pd.DataFrame:

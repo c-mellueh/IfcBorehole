@@ -27,14 +27,20 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         df.insert(len(df.columns), column_name, value)
 
     @classmethod
-    def add_borehole(cls, borehole_id: str, name: str, attributes: dict[str, Any],
-                     coordinates: tuple[float, float, float | None]):
+    def add_borehole(cls, borehole_id: str, name: str, coordinates: tuple[float, float, float | None],
+                     attributes: dict[str, Any], height: float, ifc_type: str = "IfcBuildingElementProxy"):
         df = cls.get_dataframe()
         columns = list(df)
-        row = len(df)
+        row = len(columns)
         df.loc[row] = [None for _ in columns]
         df.at[row, prop.ID] = borehole_id
         df.at[row, prop.NAME] = name
+        df.at[row, prop.HEIGHT] = height
+        df.at[row, prop.IFC_TYPE] = ifc_type
+        df.at[row][prop.X] = coordinates[0]
+        df.at[row][prop.Y] = coordinates[1]
+        df.at[row][prop.Z] = coordinates[2]
+
         for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
@@ -43,9 +49,6 @@ class Borehole(boreholeCreator.core.tool.Borehole):
             column = columns.index(name)
             df.at[row, column] = value
 
-        df.at[row][prop.X] = coordinates[0]
-        df.at[row][prop.Y] = coordinates[1]
-        df.at[row][prop.Z] = coordinates[2]
 
     @classmethod
     def get_position(cls, row: pd.Series):
