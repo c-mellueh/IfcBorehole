@@ -5,6 +5,8 @@ import boreholeCreator
 import time
 import ifcopenshell
 import tempfile
+from boreholeCreator import tool
+
 if TYPE_CHECKING:
     from boreholeCreator.module.ifc.prop import IfcProperties
 
@@ -23,21 +25,25 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         return ifcopenshell.open(temp_filename)
 
     @classmethod
-    def create_template(cls,filename, creator, organization, application, application_version, project_globalid,
-                        project_name, center):
+    def create_template(cls):
+        prop = cls.get_properties()
+        filename = prop.file_name
+        creator_name = prop.creator.get("Name")
+        organization_name = prop.organization.get("Name")
         timestamp = int(time.time())
         timestring = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(timestamp))
+        center = tool.Location.get_properties().site_position
         template = f"""ISO-10303-21;
         HEADER;
         FILE_DESCRIPTION(('ViewDefinition[CoordinationView]'),'2;1');
-        FILE_NAME('{filename}','{timestring}',('{creator}'),('{organization}'),'{application}','{application}','');
-        FILE_SCHEMA(('IFC4X3_ADD2'));
+        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{prop.application}','{prop.application}','');
+        FILE_SCHEMA(('{prop.file_schema}'));
         ENDSEC;
         DATA;
-        #1=IFCPERSON($,$,'{creator}',$,$,$,$,$);
-        #2=IFCORGANIZATION($,'{organization}',$,$,$);
+        #1=IFCPERSON($,$,'{creator_name}',$,$,$,$,$);
+        #2=IFCORGANIZATION($,'{organization_name}',$,$,$);
         #3=IFCPERSONANDORGANIZATION(#1,#2,$);
-        #4=IFCAPPLICATION(#2,'{application_version}','{application}','');
+        #4=IFCAPPLICATION(#2,'{prop.application_version}','{prop.application}','');
         #5=IFCOWNERHISTORY(#3,#4,$,.ADDED.,{timestamp},#3,#4,{timestamp});
         #6=IFCDIRECTION((1.,0.,0.));
         #7=IFCDIRECTION((0.,0.,1.));
@@ -53,7 +59,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         #17=IFCMEASUREWITHUNIT(IFCPLANEANGLEMEASURE(1.74532925199433E-2), #16);
         #18=IFCCONVERSIONBASEDUNIT(#12,.PLANEANGLEUNIT.,'DEGREE',#17);
         #19=IFCUNITASSIGNMENT((#13,#14,#15,#18));
-        #20=IFCPROJECT('{project_globalid}',#5,'{project_name}',$,$,$,$,(#11),#19);
+        #20=IFCPROJECT('{prop.project_gobal_id}',#5,'{prop.project_name}',$,$,$,$,(#11),#19);
         #21=IFCPROJECTEDCRS('EPSG:9933','DB_REF2016 zone 3',$,$,'Gaus-Krueger','3',#13);
         #22=IFCMAPCONVERSION(#11,#21,{float(center[0])},{float(center[1])},{float(center[2])},$,$,$);
         ENDSEC;
