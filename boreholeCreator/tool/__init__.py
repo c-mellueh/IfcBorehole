@@ -4,3 +4,4 @@ from location import Location
 from main import Main
 from stratum import Stratum
 from styling import Styling
+from geometry import Geometry

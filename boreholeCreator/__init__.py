@@ -10,7 +10,8 @@ modules = {
     "location": [None, "location"],
     "main":     [None, "main"],
     "stratum":  [None, "stratum"],
-    "styling":  [None, "styling"]
+    "styling":  [None, "styling"],
+    "geometry": [None,"geometry"],
 }
 
 for key, (_, name) in modules.items():

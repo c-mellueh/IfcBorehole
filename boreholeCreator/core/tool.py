@@ -15,3 +15,6 @@ class Styling:
 
 class Ifc:
     pass
+
+class Geometry:
+    pass
