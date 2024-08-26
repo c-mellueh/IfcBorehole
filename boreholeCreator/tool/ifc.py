@@ -4,6 +4,8 @@ import boreholeCreator.core.tool
 import boreholeCreator
 import time
 import ifcopenshell
+import ifcopenshell.guid
+import uuid
 import tempfile
 from boreholeCreator import tool
 
@@ -15,6 +17,16 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     @classmethod
     def get_properties(cls) -> IfcProperties:
         return boreholeCreator.IfcProperties
+
+    @classmethod
+    def create_guid(cls):
+        return ifcopenshell.guid.compress(uuid.uuid1().hex)
+
+    @classmethod
+    def get_ifcfile(cls) -> ifcopenshell.file:
+        if cls.get_properties().ifcfile is None:
+            cls.get_properties().ifcfile = cls.create_base_ifc()
+        return cls.get_properties().ifcfile
 
     @classmethod
     def create_base_ifc(cls):
@@ -66,3 +78,42 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         END-ISO-10303-21;
         """
         return template
+
+    @classmethod
+    def get_site(cls) -> ifcopenshell.entity_instance:
+        return cls.get_properties().site
+
+    @classmethod
+    def create_ifc_site(cls,site_placement:ifcopenshell.entity_instance):
+        ifcfile = cls.get_ifcfile()
+        owner_history = cls.get_owner_history()
+        project = cls.get_project()
+        site = ifcfile.createIfcSite(cls.create_guid(), owner_history, "Site", None, None, site_placement, None, None,
+                                     "ELEMENT", None, None, None, None, None)
+
+        ifcfile.createIfcRelAggregates(cls.create_guid(), owner_history, "Project Container", None, project,
+                                       [site])
+        cls.get_properties().site = site
+        return site
+
+
+    @classmethod
+    def _get_ifc_entity(cls,ifc_name,prop_name):
+        ifcfile = cls.get_ifcfile()
+        if getattr(cls.get_properties(),prop_name) is None:
+            p = ifcfile.by_type(ifc_name)
+            if p:
+                setattr(cls.get_properties(),prop_name,p[0])
+        return getattr(cls.get_properties(),prop_name)
+
+    @classmethod
+    def get_owner_history(cls) -> ifcopenshell.entity_instance | None:
+        return cls._get_ifc_entity("IfcOwnerHistory","owner_history")
+
+    @classmethod
+    def get_project(cls):
+        return cls._get_ifc_entity("IfcProject","project")
+
+    @classmethod
+    def get_geometric_representation_context(cls):
+        return cls._get_ifc_entity("IfcGeometricRepresentationContext","geometric_representation_context")
