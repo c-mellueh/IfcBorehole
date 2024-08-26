@@ -9,3 +9,7 @@ def create_nested_borehole(borehole_row, stratums_rows):
 
 def create_unnested_borehole(borehole_row):
     return core.create_unnested_borehole(borehole_row, tool.Geometry, tool.Borehole, tool.Ifc, tool.Location)
+
+
+def create_boreholes():
+    return core.create_boreholes(tool.Borehole, tool.Stratum)
