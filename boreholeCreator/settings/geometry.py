@@ -13,8 +13,10 @@ class Geometry:
     def get_properties(cls) -> GeometryProperties:
         return boreholeCreator.GeometryProperties
 
+    @classmethod
     def get_radius(cls):
         return cls.get_properties().radius
 
+    @classmethod
     def set_radius(cls, radius):
         cls.get_properties().radius = radius

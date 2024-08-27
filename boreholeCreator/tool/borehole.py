@@ -4,6 +4,7 @@ from typing import Any
 import pandas as pd
 
 import boreholeCreator.core.tool
+from boreholeCreator import tool
 from boreholeCreator.module.borehole import prop
 
 
@@ -19,11 +20,6 @@ class Borehole(boreholeCreator.core.tool.Borehole):
     @classmethod
     def set_dataframe(cls, df: pd.DataFrame):
         cls.get_properties().borehole_dataframe = df
-
-    @classmethod
-    def add_column(cls, column_name: str, value=None):
-        df = cls.get_dataframe()
-        df.insert(len(df.columns), column_name, value)
 
     @classmethod
     def add_borehole(cls, borehole_id: str, name: str, coordinates: tuple[float, float, float | None],
@@ -43,7 +39,7 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
-                cls.add_column(name)
+                tool.Util.add_column(df, name)
                 columns = list(df)
             df.at[row, name] = value
 
@@ -62,14 +58,18 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         return prop.BOREHOLE_REQUIRED
 
     @classmethod
+    def get_optional_collumns(cls) -> dict[str, Any]:
+        return prop.BOREHOLE_OPTIONAL
+
+    @classmethod
     def is_dataframe_filled(cls):
-        df = list(cls.get_dataframe())
+        df_header = list(cls.get_dataframe())
         for col_name, default in prop.BOREHOLE_OPTIONAL.items():
-            if col_name not in df:
-                cls.add_column(col_name, default)
+            if col_name not in df_header:
+                tool.Util.add_column(cls.get_dataframe(), col_name, default)
 
         for col_name in cls.get_required_collumns():
-            if col_name not in df:
+            if col_name not in df_header:
                 logging.error(f"Column '{col_name}' not found in Borehole dataframe")
                 return False
         return True
@@ -96,13 +96,3 @@ class Borehole(boreholeCreator.core.tool.Borehole):
     def reset_dataframe(cls):
         cls.get_properties().borehole_dataframe = pd.DataFrame(
             {k: [] for k in prop.BOREHOLE_REQUIRED + list(prop.BOREHOLE_OPTIONAL.keys())})
-
-    @classmethod
-    def add_missing_collumns(cls):
-        df = cls.get_dataframe()
-        for col_name, default in prop.BOREHOLE_OPTIONAL.items():
-            if not col_name in df:
-                cls.add_column(col_name, default)
-        for col_name in prop.BOREHOLE_REQUIRED:
-            if not col_name in df:
-                cls.add_column(col_name)

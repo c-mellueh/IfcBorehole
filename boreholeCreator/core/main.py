@@ -5,8 +5,12 @@ from boreholeCreator import tool
 
 
 def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location], borehole: Type[tool.Borehole],
-                stratum: Type[tool.Stratum], styling: Type[tool.Styling]) -> None:
-    if not (borehole.is_dataframe_filled() and stratum.is_dataframe_filled()):
+                stratum: Type[tool.Stratum], styling: Type[tool.Styling], util: Type[tool.Util]) -> None:
+    df_borehole = borehole.get_dataframe()
+    df_stratum = stratum.get_dataframe()
+    if not util.is_dataframe_filled(df_borehole, borehole.get_required_collumns(), borehole.get_optional_collumns()):
+        return
+    if not (util.is_dataframe_filled(df_stratum, stratum.get_required_collumns(), stratum.get_optional_collumns())):
         return
     logging.info("Create IFC-Template")
     file = ifc.get_ifcfile()

@@ -5,6 +5,7 @@ import pandas as pd
 
 import boreholeCreator
 import boreholeCreator.core.tool
+from boreholeCreator import tool
 from boreholeCreator.module.stratum import prop
 
 
@@ -20,11 +21,6 @@ class Stratum(boreholeCreator.core.tool.Stratum):
     @classmethod
     def set_dataframe(cls, df: pd.DataFrame):
         cls.get_properties().stratum_dataframe = df
-
-    @classmethod
-    def add_column(cls, column_name: str, value=None):
-        df = cls.get_dataframe()
-        df.insert(len(df.columns), column_name, value)
 
     @classmethod
     def add_stratum(cls, borehole_id: str, name: str, height: float, stratum_id: str, z_pos: float,
@@ -43,7 +39,7 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         for name, value in attributes.items():
             if name not in columns:
                 logging.warning(f"Column '{name}' not found, will be added")
-                cls.add_column(name)
+                tool.Util.add_column(df, name)
                 columns = list(df)
             df.at[len(df), columns.index(name)] = value
 
@@ -57,14 +53,19 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         return prop.STRATUM_REQUIRED
 
     @classmethod
+    def get_optional_collumns(cls):
+        return prop.STRATUM_OPTIONAL
+
+    @classmethod
     def is_dataframe_filled(cls):
-        df = list(cls.get_dataframe())
+        df = cls.get_dataframe()
+        df_header = list(df)
         for col_name, default in prop.STRATUM_OPTIONAL.items():
-            if col_name not in df:
-                cls.add_column(col_name, default)
+            if col_name not in df_header:
+                tool.Util.add_column(df, col_name, default)
         for col_name in cls.get_required_collumns():
-            if col_name not in df:
-                logging.error(f"Column '{col_name}' not found in Stratum dataframe'")
+            if col_name not in df_header:
+                logging.error(f"Column '{col_name}' not found in Stratum dataframe")
                 return False
         return True
 
@@ -72,13 +73,3 @@ class Stratum(boreholeCreator.core.tool.Stratum):
     def reset_dataframe(cls):
         df = pd.DataFrame({k: [] for k in prop.STRATUM_REQUIRED + list(prop.STRATUM_OPTIONAL.keys())})
         cls.get_properties().stratum_dataframe = df
-
-    @classmethod
-    def add_missing_collumns(cls):
-        df = cls.get_dataframe()
-        for col_name, default in prop.STRATUM_OPTIONAL.items():
-            if not col_name in df:
-                cls.add_column(col_name, default)
-        for col_name in prop.STRATUM_REQUIRED:
-            if not col_name in df:
-                cls.add_column(col_name)
