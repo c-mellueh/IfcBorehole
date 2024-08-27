@@ -218,4 +218,8 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     def assign_entities_to_site(cls, entities: list[ifcopenshell.entity_instance]):
         ifcfile = cls.get_ifcfile()
         site = cls.get_site()
-        ifcopenshell.api.run("spatial.assign_container", ifcfile, products=entities, relating_structure=site)
+        container = ifcopenshell.create_entity("IFCRELCONTAINEDINSPATIALSTRUCTURE")
+        container.OwnerHistory = cls.get_owner_history()
+        container.RelatedElements = entities
+        container.RelatingStructure = site
+        # ifcopenshell.api.run("spatial.assign_container", ifcfile, products=entities, relating_structure=site)
