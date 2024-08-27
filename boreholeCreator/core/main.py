@@ -12,6 +12,12 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
         return
     if not (util.is_dataframe_filled(df_stratum, stratum.get_required_collumns(), stratum.get_optional_collumns())):
         return
+    warning_text = "No {0}s defined. Use 'tool.{0}.add_{1}()' to create {0}s or use 'tool.{0}.set_dataframe' to use custom Dataframe"
+    if not len(df_borehole):
+        logging.warning(warning_text.format("Borehole", "borehole"))
+    if not len(df_stratum):
+        logging.warning(warning_text.format("Stratum", "stratum"))
+
     logging.info("Create IFC-Template")
     file = ifc.get_ifcfile()
     if location.get_settings().mapconversion_is_activated():
@@ -23,7 +29,7 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
     logging.info("Create Boreholes")
 
     boreholes = borehole.create_boreholes()
-    logging.info("Create Boreholes to Site")
+    logging.info("Assign Boreholes to Site")
 
     ifc.assign_entities_to_site(boreholes)
     logging.info("Style Entities Boreholes to Site")

@@ -29,11 +29,12 @@ class Util:
     @classmethod
     def is_dataframe_filled(cls, df, required_columns: list[str], optional_columns: dict[str, Any]):
         df_header = list(df)
+        is_ok = True
         for col_name, default in optional_columns.items():
             if col_name not in df_header:
                 cls.add_column(df, col_name, default)
         for col_name in required_columns:
             if col_name not in df_header:
                 logging.error(f"Column '{col_name}' not found in Stratum dataframe")
-                return False
-        return True
+                is_ok = False
+        return is_ok
