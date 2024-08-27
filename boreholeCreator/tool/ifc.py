@@ -40,7 +40,10 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         temp_handle, temp_filename = tempfile.mkstemp(suffix=".ifc")
         with open(temp_filename, "w") as f:
             f.write(template)
-        return ifcopenshell.open(temp_filename)
+        ifcfile = ifcopenshell.open(temp_filename)
+        return ifcfile
+
+
 
     @classmethod
     def create_template(cls):
@@ -78,8 +81,6 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         #18=IFCCONVERSIONBASEDUNIT(#12,.PLANEANGLEUNIT.,'DEGREE',#17);
         #19=IFCUNITASSIGNMENT((#13,#14,#15,#18));
         #20=IFCPROJECT('{prop.project_gobal_id}',#5,'{prop.project_name}',$,$,$,$,(#11),#19);
-        #21=IFCPROJECTEDCRS('EPSG:9933','DB_REF2016 zone 3',$,$,'Gaus-Krueger','3',#13);
-        #22=IFCMAPCONVERSION(#11,#21,{float(center[0])},{float(center[1])},{float(center[2])},$,$,$);
         ENDSEC;
         END-ISO-10303-21;
         """
