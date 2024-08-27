@@ -12,3 +12,7 @@ class Borehole:
 
 class Stratum:
     pass
+
+
+class Popups:
+    pass

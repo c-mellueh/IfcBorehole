@@ -4,3 +4,7 @@ from boreholeGUI.core import borehole as core
 
 def connect():
     core.add_widget_to_mainwindow(tool.MainWindow, tool.Borehole)
+
+
+def button_clicked():
+    core.button_clicked(tool.Borehole, tool.Popups)
