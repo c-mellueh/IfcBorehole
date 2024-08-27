@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 from boreholeGUI import tool
 import boreholeGUI.core.tool
 import os
-from PySide6.QtWidgets import QFileDialog, QMessageBox
+from PySide6.QtWidgets import QFileDialog, QMessageBox, QInputDialog, QLineEdit
 from boreholeGUI.module.popups import ui
 
 
@@ -79,3 +79,15 @@ class Popups(boreholeGUI.core.tool.Popups):
             msg_box.exec()
         else:
             return msg_box
+
+    @classmethod
+    def request_text_input(cls, title: str, request_text, prefill, parent=None):
+        if parent is None:
+            parent = tool.MainWindow.get()
+        answer = QInputDialog.getText(parent, title, request_text,
+                                      QLineEdit.EchoMode.Normal,
+                                      prefill)
+        if answer[1]:
+            return answer[0]
+        else:
+            return None

@@ -19,10 +19,6 @@ class Borehole(boreholeGUI.core.tool.Borehole):
     def get_widget(cls):
         return cls.get_properties().widget
 
-
-
-
-
     @classmethod
     def get_cli(cls):
         from boreholeCreator.tool import Borehole as cli

@@ -84,6 +84,7 @@ class DataFrameHeaderView(QHeaderView):
         self.setEditTriggers(QHeaderView.DoubleClicked)
         self.sectionDoubleClicked.connect(self.editSection)
         self.setModel(DataFrameModel(dataframe))
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
     def editSection(self, logicalIndex):
         # Create an editor

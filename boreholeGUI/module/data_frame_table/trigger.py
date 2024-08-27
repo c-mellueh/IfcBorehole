@@ -16,3 +16,7 @@ def warning_clicked(widget):
 
 def paint_table(widget):
     core.paint_table(widget, tool.DataFrameTable)
+
+
+def header_context_menu_requested(widget, pos):
+    core.header_context_menu_requested(widget, pos, tool.DataFrameTable)
