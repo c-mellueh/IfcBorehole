@@ -14,5 +14,7 @@ STRATUM_OPTIONAL = {RED:          0.5,  # Key & Default Value
                     GREEN:        0.5,
                     BLUE:         0.5,
                     TRANSPARENCY: 0.}
+
+
 class StratumProperties:
     stratum_dataframe: pd.DataFrame = pd.DataFrame({k: [] for k in STRATUM_REQUIRED + list(STRATUM_OPTIONAL.keys())})

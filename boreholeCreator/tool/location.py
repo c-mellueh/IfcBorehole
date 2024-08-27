@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import ifcopenshell
 
 import boreholeCreator
 import boreholeCreator.core.tool
-from boreholeCreator import tool
+from boreholeCreator import settings, tool
 
 if TYPE_CHECKING:
     from boreholeCreator.module.location.prop import LocationProperties
@@ -19,6 +19,10 @@ MZ = 0.0, 0.0, -1.0
 
 
 class Location(boreholeCreator.core.tool.Location):
+    @classmethod
+    def get_settings(cls) -> Type[settings.Location]:
+        return settings.Location
+
     @classmethod
     def get_properties(cls) -> LocationProperties:
         return boreholeCreator.LocationProperties
@@ -54,28 +58,3 @@ class Location(boreholeCreator.core.tool.Location):
         map_conversion.TargetCRS = projected_crs
         tool.Util.fill_entity_with_dict(map_conversion, cls.get_properties().map_conversion_data)
 
-    @classmethod
-    def mapconversion_is_activated(cls) -> bool:
-        return cls.get_properties().use_map_conversion
-
-    @classmethod
-    def set_mapconversion_activated(cls, state: bool):
-        cls.get_properties().use_map_conversion = state
-
-    @classmethod
-    def set_map_conversion_attribute(cls, name, value):
-        cls.get_properties().map_conversion_data[name] = value
-
-    @classmethod
-    def set_projected_crs_attribute(cls, name, value):
-        cls.get_properties().projected_crs_data[name] = value
-
-    @property
-    @classmethod
-    def site_position(cls):
-        return cls.get_properties().site_position
-
-    @site_position.setter
-    @classmethod
-    def site_position(cls, value):
-        cls.get_properties().site_position = value

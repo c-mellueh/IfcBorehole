@@ -10,7 +10,7 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
         return
     logging.info("Create IFC-Template")
     file = ifc.get_ifcfile()
-    if location.mapconversion_is_activated():
+    if location.get_settings().mapconversion_is_activated():
         location.add_map_conversion(file)
     site_placement = location.get_site_placement()
     logging.info("Create IfcSite")

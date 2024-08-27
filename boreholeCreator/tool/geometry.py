@@ -1,10 +1,11 @@
 import math
+from typing import Type
 
 import ifcopenshell
 
 import boreholeCreator
 import boreholeCreator.core.tool
-from boreholeCreator import tool
+from boreholeCreator import settings, tool
 from boreholeCreator.module.geometry.prop import GeometryProperties
 
 O = 0., 0., 0.
@@ -18,6 +19,10 @@ class Geometry(boreholeCreator.core.tool.Geometry):
     @classmethod
     def get_properties(cls) -> GeometryProperties:
         return boreholeCreator.GeometryProperties
+
+    @classmethod
+    def get_settings(cls) -> Type[settings.Geometry]:
+        return settings.Geometry
 
     @classmethod
     def get_file(cls) -> ifcopenshell.file:

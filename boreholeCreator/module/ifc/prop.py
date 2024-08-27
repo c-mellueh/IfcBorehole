@@ -16,9 +16,10 @@ class IfcProperties:
     project_name = "defaultProjectName"
     file_name = "defaultFileName.ifc"
     file_schema = "IFC4X3_ADD2"
+    pset_base_name = "DefaultPset"
+
     owner_history: ifcopenshell.entity_instance = None
     ifcfile: ifcopenshell.file = None
     project: ifcopenshell.entity_instance = None
     geometric_representation_context: ifcopenshell.entity_instance = None
     site: ifcopenshell.entity_instance = None
-    pset_base_name = "DefaultPset"
