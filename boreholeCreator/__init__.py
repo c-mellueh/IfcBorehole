@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 
 __version__ = "0.0.1"
 
@@ -19,8 +18,14 @@ for key, (_, name) in modules.items():
     modules[key][0] = importlib.import_module(f"boreholeCreator.module.{name}")
 
 
-def register():
+def _register():
     for k, (mod, _) in modules.items():
         mod.register()
 
-register()
+
+_register()
+
+
+def create_file(export_path: str):
+    from boreholeCreator.module.main import trigger
+    trigger.create_file(export_path)
