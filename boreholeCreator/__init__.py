@@ -26,6 +26,6 @@ def _register():
 _register()
 
 
-def create_file(export_path: str):
+def create_file(export_path: str | None):
     from boreholeCreator.module.main import trigger
-    trigger.create_file(export_path)
+    return trigger.create_file(export_path)

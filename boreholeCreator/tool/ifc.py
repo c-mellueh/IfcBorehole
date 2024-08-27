@@ -43,7 +43,20 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         ifcfile = ifcopenshell.open(temp_filename)
         return ifcfile
 
+    @classmethod
+    def fill_person_and_org(cls):
+        creator_dict = cls.get_properties().creator
+        organization_dict = cls.get_properties().organization
+        tool.Util.fill_entity_with_dict(cls.get_person(), creator_dict)
+        tool.Util.fill_entity_with_dict(cls.get_organization(), organization_dict)
 
+    @classmethod
+    def get_person(cls):
+        return cls._get_ifc_entity("IfcPerson", "ifc_person")
+
+    @classmethod
+    def get_organization(cls):
+        return cls._get_ifc_entity("IfcOrganization", "ifc_organization")
 
     @classmethod
     def create_template(cls):
