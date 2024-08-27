@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from boreholeGUI.module.borehole import ui
+from PySide6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
     from boreholeGUI.module.color.prop import ColorProperties
@@ -17,5 +17,5 @@ class Color(boreholeGUI.core.tool.Color):
     @classmethod
     def get_widget(cls):
         if cls.get_properties().widget is None:
-            cls.get_properties().widget = ui.Widget()
+            cls.get_properties().widget = QWidget()
         return cls.get_properties().widget

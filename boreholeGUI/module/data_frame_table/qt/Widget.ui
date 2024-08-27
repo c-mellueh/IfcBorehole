@@ -54,7 +54,7 @@
         <customwidget>
             <class>TableView</class>
             <extends>QTableView</extends>
-            <header>boreholeGUI.module.borehole.ui</header>
+            <header>boreholeGUI.module.data_frame_table.ui</header>
         </customwidget>
     </customwidgets>
     <resources/>

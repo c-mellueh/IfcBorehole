@@ -12,7 +12,7 @@ from PySide6.QtCore import (QCoreApplication, QMetaObject)
 from PySide6.QtWidgets import (QHBoxLayout, QPushButton,
                                QSizePolicy, QSpacerItem, QVBoxLayout)
 
-from boreholeGUI.module.borehole.ui import TableView
+from boreholeGUI.module.data_frame_table.ui import TableView
 
 
 class Ui_Form(object):

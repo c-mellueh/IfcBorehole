@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .ui import Widget
+    from boreholeGUI.module.data_frame_table.ui import Widget
 import pandas as pd
 
 class BoreholeProperties:

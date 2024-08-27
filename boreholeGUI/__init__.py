@@ -5,6 +5,7 @@ modules = {
     "borehole": [None, "borehole"],
     "stratum":  [None, "stratum"],
     "color":    [None, "color"],
+    "data_frame_table": [None, "data_frame_table"],
 }
 
 for key, (_, name) in modules.items():

@@ -1,0 +1,18 @@
+from boreholeGUI import tool
+from boreholeGUI.core import data_frame_table as core
+
+
+def connect():
+    pass
+
+
+def button_clicked(widget):
+    core.button_clicked(widget, tool.DataFrameTable, tool.Popups)
+
+
+def warning_clicked(widget):
+    core.warning_button_clicked(widget, tool.DataFrameTable, tool.Popups)
+
+
+def paint_table(widget):
+    core.paint_table(widget, tool.DataFrameTable)

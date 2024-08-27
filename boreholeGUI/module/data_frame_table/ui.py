@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 from PySide6.QtCore import QAbstractTableModel, Qt
-from PySide6.QtWidgets import QHeaderView, QLineEdit
+from PySide6.QtWidgets import QHeaderView, QLineEdit, QTableView, QWidget
 
 
 class DataFrameModel(QAbstractTableModel):
@@ -105,3 +105,21 @@ class DataFrameHeaderView(QHeaderView):
         self.model().setHeaderData(logicalIndex, self.orientation(), editor.text(), Qt.EditRole)
         # Close the editor
         editor.deleteLater()
+
+
+class Widget(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .widget import Ui_Form
+        self.ui = Ui_Form()
+        self.ui.setupUi(self)
+
+
+class TableView(QTableView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def paintEvent(self, e):
+        super().paintEvent(e)
+        from . import trigger
+        trigger.paint_table(self.parentWidget())
