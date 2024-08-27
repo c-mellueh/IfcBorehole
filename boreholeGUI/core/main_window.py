@@ -10,7 +10,6 @@ def create_main_window(app, main_window: Type[tool.MainWindow]):
     mw = main_window.get_main_window(app)
     main_window.clear_toolbox()
     for name, widget in main_window.get_steplist():
-        print(name, widget)
         main_window.get_toolbox().addItem(widget, name)
         widget.show()
 

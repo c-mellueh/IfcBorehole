@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 from boreholeGUI import tool
 import boreholeGUI.core.tool
 import os
-from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 from boreholeGUI.module.popups import ui
 
 
@@ -52,7 +52,7 @@ class Popups(boreholeGUI.core.tool.Popups):
         dialog = ui.ExcelDialog()
         dialog.ui.pushButton.clicked.connect(lambda: cls.select_excel_file(dialog))
         if not dialog.exec():
-            return None
+            return None, None
         return dialog.ui.lineEdit.text(), dialog.ui.comboBox.currentText()
 
     @classmethod
@@ -65,3 +65,17 @@ class Popups(boreholeGUI.core.tool.Popups):
         sheet_names = pd.ExcelFile(path).sheet_names
         dialog.ui.comboBox.clear()
         dialog.ui.comboBox.addItems(sheet_names)
+
+    @classmethod
+    def create_info_popup(cls, text, title="Info", execute: bool = True):
+        msg_box = QMessageBox()
+        # icon = get_icon()
+        # msg_box.setWindowIcon(icon)
+        msg_box.setText(text)
+        msg_box.setWindowTitle(title)
+        msg_box.setIcon(QMessageBox.Icon.Information)
+
+        if execute:
+            msg_box.exec()
+        else:
+            return msg_box

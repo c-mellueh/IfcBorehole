@@ -9,3 +9,5 @@ import pandas as pd
 class BoreholeProperties:
     widget: Widget = None
     dataframe: pd.DataFrame = None
+    header_view = None
+    warning: str = None

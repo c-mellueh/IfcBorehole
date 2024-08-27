@@ -3,71 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pandas as pd
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QStyle
 
 from boreholeGUI.module.borehole import trigger, ui
+from boreholeGUI.module.pandas.table import DataFrameHeaderView, DataFrameModel
 
 if TYPE_CHECKING:
     from boreholeGUI.module.borehole.prop import BoreholeProperties
 import boreholeGUI.core.tool
-
-
-class PandasModel(QAbstractTableModel):
-    """A model to interface a Qt view with pandas dataframe """
-
-    def __init__(self, dataframe: pd.DataFrame, parent=None):
-        QAbstractTableModel.__init__(self, parent)
-        self._dataframe = dataframe
-
-    def rowCount(self, parent=QModelIndex()) -> int:
-        """ Override method from QAbstractTableModel
-
-        Return row count of the pandas DataFrame
-        """
-        if parent == QModelIndex():
-            return len(self._dataframe)
-
-        return 0
-
-    def columnCount(self, parent=QModelIndex()) -> int:
-        """Override method from QAbstractTableModel
-
-        Return column count of the pandas DataFrame
-        """
-        if parent == QModelIndex():
-            return len(self._dataframe.columns)
-        return 0
-
-    def data(self, index: QModelIndex, role=Qt.ItemDataRole):
-        """Override method from QAbstractTableModel
-
-        Return data cell from the pandas DataFrame
-        """
-        if not index.isValid():
-            return None
-
-        if role == Qt.DisplayRole:
-            return str(self._dataframe.iloc[index.row(), index.column()])
-
-        return None
-
-    def headerData(
-            self, section: int, orientation: Qt.Orientation, role: Qt.ItemDataRole
-    ):
-        """Override method from QAbstractTableModel
-
-        Return dataframe index as vertical header data and columns as horizontal header data.
-        """
-        if role == Qt.ItemDataRole.DisplayRole:
-            if orientation == Qt.Orientation.Horizontal:
-                return str(self._dataframe.columns[section])
-
-            if orientation == Qt.Orientation.Vertical:
-                return str(self._dataframe.index[section])
-
-        return None
-
-
 
 class Borehole(boreholeGUI.core.tool.Borehole):
     @classmethod
@@ -77,15 +21,26 @@ class Borehole(boreholeGUI.core.tool.Borehole):
     @classmethod
     def get_widget(cls):
         if cls.get_properties().widget is None:
-            cls.get_properties().widget = ui.Widget()
+            cls.get_properties().widget = cls._create_widget()
         return cls.get_properties().widget
 
     @classmethod
-    def set_dataframe(cls, dataframe: pd.DataFrame):
-        cls.get_properties().dataframe = dataframe
-        model = PandasModel(dataframe)
-        cls.get_widget().ui.tableView.setModel(model)
+    def _create_widget(cls):
+        widget = ui.Widget()
+        cls.get_properties().widget = widget
+        cls.get_warning_button().setIcon(widget.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning))
+        cls.get_warning_button().setText("Achtung!")
+        return widget
 
+    @classmethod
+    def set_dataframe(cls, dataframe: pd.DataFrame):
+        model = DataFrameModel(dataframe)
+        cls.get_properties().dataframe = dataframe
+        cls.get_properties().header_view = DataFrameHeaderView(Qt.Orientation.Horizontal, dataframe)
+        view = cls.get_widget().ui.tableView
+        view.setHorizontalHeader(cls.get_properties().header_view)
+        view.setModel(model)
+        cls.get_properties().header_view.show()
     @classmethod
     def get_ui(cls):
         return cls.get_widget().ui
@@ -93,3 +48,25 @@ class Borehole(boreholeGUI.core.tool.Borehole):
     @classmethod
     def connect_triggers(cls):
         cls.get_ui().pushButton.clicked.connect(trigger.button_clicked)
+        cls.get_warning_button().clicked.connect(trigger.warning_clicked)
+
+    @classmethod
+    def get_column_names(cls):
+        return list(cls.get_properties().dataframe)
+
+    @classmethod
+    def get_warning_button(cls):
+        return cls.get_ui().pushButton_2
+
+    @classmethod
+    def set_warning(cls, warning: str | None):
+        if not warning:
+            cls.get_warning_button().hide()
+        else:
+            cls.get_warning_button().show()
+        cls.get_properties().warning = warning
+        cls.get_warning_button().setToolTip(warning)
+
+    @classmethod
+    def get_warning(cls):
+        return cls.get_properties().warning
