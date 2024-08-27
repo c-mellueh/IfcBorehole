@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 from PySide6.QtCore import QAbstractTableModel, Qt
-from PySide6.QtWidgets import QHeaderView, QLineEdit, QTableView, QWidget
+from PySide6.QtWidgets import QCompleter, QHeaderView, QLineEdit, QTableView, QWidget
 
 
 class DataFrameModel(QAbstractTableModel):
@@ -87,8 +87,13 @@ class DataFrameHeaderView(QHeaderView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
     def editSection(self, logicalIndex):
+        widget = self.parentWidget().parentWidget()
+        from boreholeGUI import tool
+        missing_columns = tool.DataFrameTable.get_missing_required_columns(widget)
+        missing_columns += tool.DataFrameTable.get_missing_optional_columns(widget)
         # Create an editor
         editor = QLineEdit(self)
+        editor.setCompleter(QCompleter(missing_columns))
         editor.setFrame(False)
         editor.setText(self.model().headerData(logicalIndex, self.orientation(), Qt.DisplayRole))
 

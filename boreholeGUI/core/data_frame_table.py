@@ -19,11 +19,7 @@ def button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable
 
 
 def paint_table(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable]):
-    widget_tool = data_frame_table.get_tool_from_widget(widget)
-    widget_tool_cli = widget_tool.get_cli()
-    existing_column_names = set(data_frame_table.get_column_names(widget))
-    required_column_names = set(widget_tool_cli.get_required_collumns())
-    missing_column_names = sorted(required_column_names.difference(existing_column_names))
+    missing_column_names = data_frame_table.get_missing_required_columns(widget)
     if missing_column_names:
         missing_column_names = '\n'.join(missing_column_names)
         data_frame_table.set_warning(f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_column_names}",

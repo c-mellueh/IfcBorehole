@@ -118,3 +118,21 @@ class DataFrameTable:
         logical_index = tv.logicalIndexAt(pos)
         df = cls.get_dataframe(widget)
         df[list(df)[logical_index]] = None
+
+    @classmethod
+    def get_missing_required_columns(cls, widget: ui.Widget):
+        widget_tool = cls.get_tool_from_widget(widget)
+        widget_tool_cli = widget_tool.get_cli()
+        existing_column_names = set(cls.get_column_names(widget))
+        required_column_names = set(widget_tool_cli.get_required_collumns())
+        missing_column_names = sorted(required_column_names.difference(existing_column_names))
+        return missing_column_names
+
+    @classmethod
+    def get_missing_optional_columns(cls, widget: ui.Widget):
+        widget_tool = cls.get_tool_from_widget(widget)
+        widget_tool_cli = widget_tool.get_cli()
+        existing_column_names = set(cls.get_column_names(widget))
+        required_column_names = set(widget_tool_cli.get_optional_collumns())
+        missing_column_names = sorted(required_column_names.difference(existing_column_names))
+        return missing_column_names
