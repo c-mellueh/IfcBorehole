@@ -1,0 +1,2 @@
+class BoreholeProperties:
+    widget = None

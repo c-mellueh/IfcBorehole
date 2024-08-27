@@ -1,0 +1,2 @@
+class StratumProperties:
+    widget = None

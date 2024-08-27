@@ -2,6 +2,9 @@ import importlib
 
 modules = {
     "main_window": [None, "main_window"],
+    "borehole": [None, "borehole"],
+    "stratum":  [None, "stratum"],
+    "color":    [None, "color"],
 }
 
 for key, (_, name) in modules.items():

@@ -11,7 +11,6 @@
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect)
 from PySide6.QtWidgets import (QMenuBar, QStatusBar, QToolBox, QVBoxLayout, QWidget)
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -23,13 +22,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.toolBox = QToolBox(self.centralwidget)
         self.toolBox.setObjectName(u"toolBox")
-        self.page = QWidget()
-        self.page.setObjectName(u"page")
-        self.page.setGeometry(QRect(0, 0, 969, 506))
-        self.toolBox.addItem(self.page, u"Page 1")
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
-        self.page_2.setGeometry(QRect(0, 0, 969, 506))
+        self.page_2.setGeometry(QRect(0, 0, 969, 536))
         self.toolBox.addItem(self.page_2, u"Page 2")
 
         self.verticalLayout.addWidget(self.toolBox)
@@ -48,13 +43,10 @@ class Ui_MainWindow(object):
         self.toolBox.setCurrentIndex(0)
 
         QMetaObject.connectSlotsByName(MainWindow)
-
     # setupUi
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.page),
-                                 QCoreApplication.translate("MainWindow", u"Page 1", None))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2),
                                  QCoreApplication.translate("MainWindow", u"Page 2", None))
     # retranslateUi
