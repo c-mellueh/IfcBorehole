@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 
 from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit
 
@@ -22,9 +22,10 @@ class Settings(boreholeGUI.core.tool.Settings):
 
     @classmethod
     def add_setting(cls, widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox, getter: Callable,
-                    setter: Callable):
-        cls.get_properties().settings_list.append((widget, getter, setter))
+                    setter: Callable, datatype):
+        cls.get_properties().settings_list.append((widget, getter, setter, datatype))
 
     @classmethod
-    def get_settings_list(cls) -> list[tuple[QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox, Callable, Callable]]:
+    def get_settings_list(cls) -> list[
+        tuple[QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox, Callable, Callable], Any]:
         return cls.get_properties().settings_list
