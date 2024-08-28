@@ -83,15 +83,18 @@ class DataFrameModel(QAbstractTableModel):
         self._dataframe.insert(column, header_name, prefill)
         self.endInsertColumns()
 
+    def removeColumn(self, column):
+        self.beginRemoveColumns(QModelIndex(), column, column + 1)
+        self._dataframe.drop(list(self._dataframe)[column], axis=1, inplace=True)
+        self.endRemoveColumns()
 
 class DataFrameHeaderView(QHeaderView):
-    def __init__(self, orientation, dataframe, parent=None):
+    def __init__(self, orientation, model, parent=None):
         super().__init__(orientation, parent)
-        self.dataframe = dataframe
         self.setSectionsClickable(True)
         self.setEditTriggers(QHeaderView.DoubleClicked)
         self.sectionDoubleClicked.connect(self.editSection)
-        self.setModel(DataFrameModel(dataframe))
+        self.setModel(model)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
     def editSection(self, logicalIndex):

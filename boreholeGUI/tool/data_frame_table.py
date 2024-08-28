@@ -47,7 +47,7 @@ class DataFrameTable:
         widget_tool = cls.get_tool_from_widget(widget)
         widget_tool.get_properties().dataframe = dataframe
 
-        header_view = ui.DataFrameHeaderView(Qt.Orientation.Horizontal, dataframe)
+        header_view = ui.DataFrameHeaderView(Qt.Orientation.Horizontal, model)
         table_view.setHorizontalHeader(header_view)
         header_view.show()
         header_view.customContextMenuRequested.connect(lambda pos: trigger.header_context_menu_requested(widget, pos))
@@ -93,9 +93,11 @@ class DataFrameTable:
         add_column = menu.addAction("Add Column")
         add_column.triggered.connect(lambda: cls.add_column(logical_index + 1, widget))
         fill_column = menu.addAction("Fill Column With Value")
-        fill_column.triggered.connect(lambda: cls.fill_column_at(logical_index, widget))
+        fill_column.triggered.connect(lambda: cls.fill_column(logical_index, widget))
         clear_column = menu.addAction("Clear Column")
-        clear_column.triggered.connect(lambda: cls.clear_column_at(logical_index, widget))
+        clear_column.triggered.connect(lambda: cls.clear_column(logical_index, widget))
+        remove_column = menu.addAction("Remove Column")
+        remove_column.triggered.connect(lambda: cls.remove_column(logical_index, widget))
 
         missing_titles = cls.get_missing_required_columns(widget)
         if not missing_titles:
@@ -107,6 +109,11 @@ class DataFrameTable:
             sub_menu.addAction(title).triggered.connect(lambda _, t=title: cls.rename_column(widget, logical_index, t))
 
         return menu
+
+    @classmethod
+    def remove_column(cls, index, widget):
+        model = cls.get_table_view(widget).model()
+        model.removeColumn(index)
 
     @classmethod
     def rename_column(cls, widget, index, t):
@@ -123,7 +130,7 @@ class DataFrameTable:
         table_view.model().insertColumn(index, column_name, prefill)
 
     @classmethod
-    def fill_column_at(cls, logical_index, widget: ui.Widget):
+    def fill_column(cls, logical_index, widget: ui.Widget):
         from boreholeGUI import tool
         answer = tool.Popups.request_text_input("Fill Column with Values", "Value:", "100", widget)
         if answer is None:
@@ -132,7 +139,7 @@ class DataFrameTable:
         df[list(df)[logical_index]] = answer
 
     @classmethod
-    def clear_column_at(cls, logical_index, widget: ui.Widget):
+    def clear_column(cls, logical_index, widget: ui.Widget):
         df = cls.get_dataframe(widget)
         df[list(df)[logical_index]] = None
 
