@@ -129,7 +129,7 @@
                             <item row="11" column="1">
                                 <widget class="QComboBox" name="cb_file_schema">
                                     <property name="currentText">
-                                        <string>IFC4X3</string>
+                                        <string>IFC2X3</string>
                                     </property>
                                     <item>
                                         <property name="text">
@@ -185,7 +185,7 @@
                             <item row="0" column="0">
                                 <widget class="QLabel" name="label_2">
                                     <property name="text">
-                                        <string>Activate Mapconversion</string>
+                                        <string>Activate IfcMapConversion</string>
                                     </property>
                                 </widget>
                             </item>
@@ -202,6 +202,13 @@
                             <item row="1" column="0" colspan="2">
                                 <widget class="QWidget" name="wi_map_conversion" native="true">
                                     <layout class="QFormLayout" name="formLayout_4">
+                                        <item row="0" column="0" colspan="2">
+                                            <widget class="QLabel" name="le_map_conv">
+                                                <property name="text">
+                                                    <string>IfcMapConversion</string>
+                                                </property>
+                                            </widget>
+                                        </item>
                                         <item row="1" column="0">
                                             <widget class="QLabel" name="le_map_conv_easting">
                                                 <property name="text">
@@ -262,79 +269,79 @@
                                         <item row="6" column="1">
                                             <widget class="QLineEdit" name="le_scale"/>
                                         </item>
-                                        <item row="0" column="0" colspan="2">
-                                            <widget class="QLabel" name="le_map_conv">
-                                                <property name="text">
-                                                    <string>IfcMapConversion Attributes</string>
-                                                </property>
-                                            </widget>
-                                        </item>
-                                        <item row="7" column="0" colspan="2">
+                                        <item row="8" column="0" colspan="2">
                                             <widget class="QLabel" name="la_crs">
                                                 <property name="text">
-                                                    <string>IfcProjectedCRS Attributes</string>
+                                                    <string>IfcProjectedCRS</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="8" column="0">
+                                        <item row="9" column="0">
                                             <widget class="QLabel" name="la_crs_name">
                                                 <property name="text">
                                                     <string>Name</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="9" column="0">
+                                        <item row="9" column="1">
+                                            <widget class="QLineEdit" name="le_crs_name"/>
+                                        </item>
+                                        <item row="10" column="0">
                                             <widget class="QLabel" name="la_crs_description">
                                                 <property name="text">
                                                     <string>Description</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="10" column="0">
+                                        <item row="10" column="1">
+                                            <widget class="QLineEdit" name="le_crs_description"/>
+                                        </item>
+                                        <item row="11" column="0">
                                             <widget class="QLabel" name="la_geodetic_datum">
                                                 <property name="text">
                                                     <string>GeodeticDatum</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="11" column="0">
+                                        <item row="11" column="1">
+                                            <widget class="QLineEdit" name="le_geodetic_datum"/>
+                                        </item>
+                                        <item row="12" column="0">
                                             <widget class="QLabel" name="la_vertical_datum">
                                                 <property name="text">
                                                     <string>VerticalDatum</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="12" column="0">
+                                        <item row="12" column="1">
+                                            <widget class="QLineEdit" name="le_vertical_datum"/>
+                                        </item>
+                                        <item row="13" column="0">
                                             <widget class="QLabel" name="la_map_projection">
                                                 <property name="text">
                                                     <string>MapProjection</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="9" column="1">
-                                            <widget class="QLineEdit" name="le_crs_description"/>
-                                        </item>
-                                        <item row="8" column="1">
-                                            <widget class="QLineEdit" name="le_crs_name"/>
-                                        </item>
-                                        <item row="10" column="1">
-                                            <widget class="QLineEdit" name="le_geodetic_datum"/>
-                                        </item>
-                                        <item row="11" column="1">
-                                            <widget class="QLineEdit" name="le_vertical_datum"/>
-                                        </item>
-                                        <item row="12" column="1">
+                                        <item row="13" column="1">
                                             <widget class="QLineEdit" name="le_map_projection"/>
                                         </item>
-                                        <item row="13" column="0">
+                                        <item row="14" column="0">
                                             <widget class="QLabel" name="le_crs_map_zone">
                                                 <property name="text">
                                                     <string>MapZone</string>
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="13" column="1">
+                                        <item row="14" column="1">
                                             <widget class="QLineEdit" name="le_mapzone"/>
+                                        </item>
+                                        <item row="7" column="0" colspan="2">
+                                            <widget class="Line" name="line">
+                                                <property name="orientation">
+                                                    <enum>Qt::Horizontal</enum>
+                                                </property>
+                                            </widget>
                                         </item>
                                     </layout>
                                 </widget>

@@ -172,6 +172,11 @@ class Ui_Form(object):
         self.wi_map_conversion.setObjectName(u"wi_map_conversion")
         self.formLayout_4 = QFormLayout(self.wi_map_conversion)
         self.formLayout_4.setObjectName(u"formLayout_4")
+        self.le_map_conv = QLabel(self.wi_map_conversion)
+        self.le_map_conv.setObjectName(u"le_map_conv")
+
+        self.formLayout_4.setWidget(0, QFormLayout.SpanningRole, self.le_map_conv)
+
         self.le_map_conv_easting = QLabel(self.wi_map_conversion)
         self.le_map_conv_easting.setObjectName(u"le_map_conv_easting")
 
@@ -232,75 +237,77 @@ class Ui_Form(object):
 
         self.formLayout_4.setWidget(6, QFormLayout.FieldRole, self.le_scale)
 
-        self.le_map_conv = QLabel(self.wi_map_conversion)
-        self.le_map_conv.setObjectName(u"le_map_conv")
-
-        self.formLayout_4.setWidget(0, QFormLayout.SpanningRole, self.le_map_conv)
-
         self.la_crs = QLabel(self.wi_map_conversion)
         self.la_crs.setObjectName(u"la_crs")
 
-        self.formLayout_4.setWidget(7, QFormLayout.SpanningRole, self.la_crs)
+        self.formLayout_4.setWidget(8, QFormLayout.SpanningRole, self.la_crs)
 
         self.la_crs_name = QLabel(self.wi_map_conversion)
         self.la_crs_name.setObjectName(u"la_crs_name")
 
-        self.formLayout_4.setWidget(8, QFormLayout.LabelRole, self.la_crs_name)
-
-        self.la_crs_description = QLabel(self.wi_map_conversion)
-        self.la_crs_description.setObjectName(u"la_crs_description")
-
-        self.formLayout_4.setWidget(9, QFormLayout.LabelRole, self.la_crs_description)
-
-        self.la_geodetic_datum = QLabel(self.wi_map_conversion)
-        self.la_geodetic_datum.setObjectName(u"la_geodetic_datum")
-
-        self.formLayout_4.setWidget(10, QFormLayout.LabelRole, self.la_geodetic_datum)
-
-        self.la_vertical_datum = QLabel(self.wi_map_conversion)
-        self.la_vertical_datum.setObjectName(u"la_vertical_datum")
-
-        self.formLayout_4.setWidget(11, QFormLayout.LabelRole, self.la_vertical_datum)
-
-        self.la_map_projection = QLabel(self.wi_map_conversion)
-        self.la_map_projection.setObjectName(u"la_map_projection")
-
-        self.formLayout_4.setWidget(12, QFormLayout.LabelRole, self.la_map_projection)
-
-        self.le_crs_description = QLineEdit(self.wi_map_conversion)
-        self.le_crs_description.setObjectName(u"le_crs_description")
-
-        self.formLayout_4.setWidget(9, QFormLayout.FieldRole, self.le_crs_description)
+        self.formLayout_4.setWidget(9, QFormLayout.LabelRole, self.la_crs_name)
 
         self.le_crs_name = QLineEdit(self.wi_map_conversion)
         self.le_crs_name.setObjectName(u"le_crs_name")
 
-        self.formLayout_4.setWidget(8, QFormLayout.FieldRole, self.le_crs_name)
+        self.formLayout_4.setWidget(9, QFormLayout.FieldRole, self.le_crs_name)
+
+        self.la_crs_description = QLabel(self.wi_map_conversion)
+        self.la_crs_description.setObjectName(u"la_crs_description")
+
+        self.formLayout_4.setWidget(10, QFormLayout.LabelRole, self.la_crs_description)
+
+        self.le_crs_description = QLineEdit(self.wi_map_conversion)
+        self.le_crs_description.setObjectName(u"le_crs_description")
+
+        self.formLayout_4.setWidget(10, QFormLayout.FieldRole, self.le_crs_description)
+
+        self.la_geodetic_datum = QLabel(self.wi_map_conversion)
+        self.la_geodetic_datum.setObjectName(u"la_geodetic_datum")
+
+        self.formLayout_4.setWidget(11, QFormLayout.LabelRole, self.la_geodetic_datum)
 
         self.le_geodetic_datum = QLineEdit(self.wi_map_conversion)
         self.le_geodetic_datum.setObjectName(u"le_geodetic_datum")
 
-        self.formLayout_4.setWidget(10, QFormLayout.FieldRole, self.le_geodetic_datum)
+        self.formLayout_4.setWidget(11, QFormLayout.FieldRole, self.le_geodetic_datum)
+
+        self.la_vertical_datum = QLabel(self.wi_map_conversion)
+        self.la_vertical_datum.setObjectName(u"la_vertical_datum")
+
+        self.formLayout_4.setWidget(12, QFormLayout.LabelRole, self.la_vertical_datum)
 
         self.le_vertical_datum = QLineEdit(self.wi_map_conversion)
         self.le_vertical_datum.setObjectName(u"le_vertical_datum")
 
-        self.formLayout_4.setWidget(11, QFormLayout.FieldRole, self.le_vertical_datum)
+        self.formLayout_4.setWidget(12, QFormLayout.FieldRole, self.le_vertical_datum)
+
+        self.la_map_projection = QLabel(self.wi_map_conversion)
+        self.la_map_projection.setObjectName(u"la_map_projection")
+
+        self.formLayout_4.setWidget(13, QFormLayout.LabelRole, self.la_map_projection)
 
         self.le_map_projection = QLineEdit(self.wi_map_conversion)
         self.le_map_projection.setObjectName(u"le_map_projection")
 
-        self.formLayout_4.setWidget(12, QFormLayout.FieldRole, self.le_map_projection)
+        self.formLayout_4.setWidget(13, QFormLayout.FieldRole, self.le_map_projection)
 
         self.le_crs_map_zone = QLabel(self.wi_map_conversion)
         self.le_crs_map_zone.setObjectName(u"le_crs_map_zone")
 
-        self.formLayout_4.setWidget(13, QFormLayout.LabelRole, self.le_crs_map_zone)
+        self.formLayout_4.setWidget(14, QFormLayout.LabelRole, self.le_crs_map_zone)
 
         self.le_mapzone = QLineEdit(self.wi_map_conversion)
         self.le_mapzone.setObjectName(u"le_mapzone")
 
-        self.formLayout_4.setWidget(13, QFormLayout.FieldRole, self.le_mapzone)
+        self.formLayout_4.setWidget(14, QFormLayout.FieldRole, self.le_mapzone)
+
+        self.line = QFrame(self.wi_map_conversion)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.formLayout_4.setWidget(7, QFormLayout.SpanningRole, self.line)
 
 
         self.formLayout_3.setWidget(1, QFormLayout.SpanningRole, self.wi_map_conversion)
@@ -323,7 +330,7 @@ class Ui_Form(object):
         self.la_application_name.setText(QCoreApplication.translate("Form", u"Application Name", None))
         self.la_application_version.setText(QCoreApplication.translate("Form", u"Application Version", None))
         self.la_author.setText(QCoreApplication.translate("Form", u"Author", None))
-        self.la_family_name.setText(QCoreApplication.translate("Form", u"FamilyName ", None))
+        self.la_family_name.setText(QCoreApplication.translate("Form", u"FamilyName", None))
         self.la_given_name.setText(QCoreApplication.translate("Form", u"GivenName", None))
         self.la_company.setText(QCoreApplication.translate("Form", u"Company", None))
         self.la_company_name.setText(QCoreApplication.translate("Form", u"Name", None))
@@ -333,21 +340,21 @@ class Ui_Form(object):
         self.cb_file_schema.setItemText(1, QCoreApplication.translate("Form", u"IFC4", None))
         self.cb_file_schema.setItemText(2, QCoreApplication.translate("Form", u"IFC4X3", None))
 
-        self.cb_file_schema.setCurrentText(QCoreApplication.translate("Form", u"IFC4X3", None))
+        self.cb_file_schema.setCurrentText(QCoreApplication.translate("Form", u"IFC2X3", None))
         self.la_default_pset_name.setText(QCoreApplication.translate("Form", u"Default Pset Name", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"BoreHole Radius", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab),
                                   QCoreApplication.translate("Form", u"General", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"Activate Mapconversion", None))
+        self.label_2.setText(QCoreApplication.translate("Form", u"Activate IfcMapConversion", None))
         self.cb_mapconversion.setText("")
+        self.le_map_conv.setText(QCoreApplication.translate("Form", u"IfcMapConversion", None))
         self.le_map_conv_easting.setText(QCoreApplication.translate("Form", u"Eastings", None))
         self.le_map_conv_northing.setText(QCoreApplication.translate("Form", u"Nortings", None))
         self.le_map_conv_orth_height.setText(QCoreApplication.translate("Form", u"OrthogonalHeight", None))
         self.le_map_conv_xaxis_absc.setText(QCoreApplication.translate("Form", u"XAxisAbscissa", None))
         self.le_map_conv_xaxis_ord.setText(QCoreApplication.translate("Form", u"XAxisOrdinate", None))
         self.le_map_conv_scale.setText(QCoreApplication.translate("Form", u"Scale", None))
-        self.le_map_conv.setText(QCoreApplication.translate("Form", u"IfcMapConversion Attributes", None))
-        self.la_crs.setText(QCoreApplication.translate("Form", u"IfcProjectedCRS Attributes", None))
+        self.la_crs.setText(QCoreApplication.translate("Form", u"IfcProjectedCRS", None))
         self.la_crs_name.setText(QCoreApplication.translate("Form", u"Name", None))
         self.la_crs_description.setText(QCoreApplication.translate("Form", u"Description", None))
         self.la_geodetic_datum.setText(QCoreApplication.translate("Form", u"GeodeticDatum", None))
