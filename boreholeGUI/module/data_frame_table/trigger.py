@@ -20,3 +20,7 @@ def paint_table(widget):
 
 def header_context_menu_requested(widget, pos):
     core.header_context_menu_requested(widget, pos, tool.DataFrameTable)
+
+
+def dataframe_select_file_clicked(dialog):
+    core.dataframe_select_file_clicked(dialog, tool.Popups)

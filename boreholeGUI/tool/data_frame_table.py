@@ -10,6 +10,7 @@ import pandas as pd
 from boreholeGUI.module.data_frame_table import ui, trigger
 import boreholeGUI
 
+import geopandas as gpd
 
 class DataFrameTable:
     @classmethod
@@ -157,3 +158,16 @@ class DataFrameTable:
         required_column_names = set(widget_tool_cli.get_optional_collumns())
         missing_column_names = sorted(required_column_names.difference(existing_column_names))
         return missing_column_names
+
+    @classmethod
+    def create_select_dialog(cls):
+        dialog = ui.SelectDialog()
+        dialog.ui.pushButton.clicked.connect(lambda: trigger.dataframe_select_file_clicked(dialog))
+        return dialog
+
+    @classmethod
+    def transform_geopandas(cls, path) -> pd.DataFrame:
+        df = gpd.read_file(path)
+        from boreholeCreator.module.borehole.prop import X, Y, Z
+        df[[X, Y, Z]] = df["geometry"].get_coordinates(include_z=True)
+        return pd.DataFrame(df).drop("geometry", axis=1)

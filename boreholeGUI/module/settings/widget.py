@@ -338,7 +338,7 @@ class Ui_Form(object):
         self.la_fileschema.setText(QCoreApplication.translate("Form", u"FileSchema", None))
         self.cb_file_schema.setItemText(0, QCoreApplication.translate("Form", u"IFC2X3", None))
         self.cb_file_schema.setItemText(1, QCoreApplication.translate("Form", u"IFC4", None))
-        self.cb_file_schema.setItemText(2, QCoreApplication.translate("Form", u"IFC4X3", None))
+        self.cb_file_schema.setItemText(2, QCoreApplication.translate("Form", u"IFC4X3_ADD2", None))
 
         self.cb_file_schema.setCurrentText(QCoreApplication.translate("Form", u"IFC2X3", None))
         self.la_default_pset_name.setText(QCoreApplication.translate("Form", u"Default Pset Name", None))

@@ -9,12 +9,34 @@ if TYPE_CHECKING:
 from boreholeGUI import tool
 import pandas as pd
 
+FILE_TYPES = [
+    ("Excel", "xlsx", 0),
+    ("CSV", "csv", 2),
+    ("GeoJSON", "geoJSON", 1),
+    ("Shapefile", "shp", 1),
+    ("Geopackage", "gpkg", 1),
+]
+
 
 def button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable], popups: Type[tool.Popups]):
-    path, sheet_name = popups.select_excel_worksheet()
-    if not path:
+    dialog = data_frame_table.create_select_dialog()
+    if not dialog.exec():
         return
-    df = pd.read_excel(path, sheet_name=sheet_name)
+    path, sheet_name = dialog.ui.lineEdit.text(), dialog.ui.comboBox.currentText()
+    index = None
+    for name, file_type, n in FILE_TYPES:
+        if path.endswith(file_type):
+            index = n
+
+    if index == 0:
+        df = pd.read_excel(path, sheet_name=sheet_name)
+    elif index == 1:
+        df = data_frame_table.transform_geopandas(path)
+    elif index == 2:
+        df = pd.read_csv(path)
+    else:
+        popups.create_warning_popup(f"Fileformat '{path.split('.')[-1]}' not supported'")
+        return
     data_frame_table.set_dataframe(df, widget)
 
 
@@ -40,3 +62,18 @@ def header_context_menu_requested(widget: ui.Widget, pos: QPoint, data_frame_tab
     header = data_frame_table.get_table_view(widget).horizontalHeader()
     menu = data_frame_table.create_header_context_menu(pos, widget)
     menu.exec(header.mapToGlobal(pos))
+
+
+def dataframe_select_file_clicked(dialog: ui.SelectDialog, popups: Type[tool.Popups]):
+    file_type = ";;".join([f"{name} (*.{file})" for name, file, _ in FILE_TYPES + [("all", "*", 0)]])
+    path = popups.get_open_path(file_type, dialog)
+    if not path:
+        return
+    dialog.ui.lineEdit.setText(path)
+    if path.endswith("xlsx"):
+        dialog.ui.comboBox.show()
+        sheet_names = pd.ExcelFile(path).sheet_names
+        dialog.ui.comboBox.clear()
+        dialog.ui.comboBox.addItems(sheet_names)
+    else:
+        dialog.ui.comboBox.hide()

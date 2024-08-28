@@ -41,4 +41,4 @@ def run_clicked(main_window: Type[tool.MainWindow], borehole: Type[tool.Borehole
     stratum_df = stratum.get_cli().set_correct_datatypes(stratum.get_dataframe())
     stratum.get_cli().set_dataframe(stratum_df)
     import boreholeCreator
-    boreholeCreator.create_file("TestExport.ifc")
+    boreholeCreator.create_file(path)

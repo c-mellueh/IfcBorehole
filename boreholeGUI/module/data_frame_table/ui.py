@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import pandas as pd
 from PySide6.QtCore import QAbstractTableModel, Qt
-from PySide6.QtWidgets import QCompleter, QHeaderView, QLineEdit, QTableView, QWidget
+from PySide6.QtWidgets import QCompleter, QDialog, QHeaderView, QLineEdit, QTableView, QWidget
+
+from .select_dialog import Ui_Dialog
 
 
 class DataFrameModel(QAbstractTableModel):
@@ -129,3 +131,10 @@ class TableView(QTableView):
         super().paintEvent(e)
         from . import trigger
         trigger.paint_table(self.parentWidget())
+
+
+class SelectDialog(QDialog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ui = Ui_Dialog()
+        self.ui.setupUi(self)

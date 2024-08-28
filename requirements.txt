@@ -3,3 +3,4 @@ SOMcreator
 pandas
 ifcopenshell
 numpy
+geopandas

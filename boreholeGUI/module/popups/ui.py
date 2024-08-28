@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 
-from .excel_select_dialog import Ui_Dialog
+from boreholeGUI.module.select_dialog.excel_select_dialog import Ui_Dialog
 
 
 class ExcelDialog(QtWidgets.QDialog):
