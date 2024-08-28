@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QApplication
 
 import boreholeGUI
 import boreholeGUI.core.tool
-from boreholeGUI.module.main_window import ui
+from boreholeGUI.module.main_window import trigger, ui
 
 if TYPE_CHECKING:
     from boreholeGUI.module.main_window.prop import MainWindowProperties
@@ -21,10 +21,16 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
     @classmethod
     def get_main_window(cls, application: QApplication):
         if cls.get_properties().main_window is None:
-            cls.get_properties().main_window = ui.MainWindow()
-            cls.get_properties().ui = cls.get_properties().main_window.ui
-            cls.get_properties().application = application
+            cls.create_main_window(application)
         return cls.get_properties().main_window
+
+    @classmethod
+    def create_main_window(cls, application: QApplication):
+        window = ui.MainWindow()
+        cls.get_properties().main_window = window
+        cls.get_properties().ui = window.ui
+        cls.get_properties().application = application
+        window.ui.pushButton.clicked.connect(trigger.run_clicked)
 
     @classmethod
     def hide_console(cls):

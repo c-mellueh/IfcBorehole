@@ -7,8 +7,8 @@ def main(initial_file: str | None = None, log_level=None):
     import boreholeGUI.core.main_window
     from boreholeGUI import tool
     if log_level == None:
-        log_level = logging.WARNING
-
+        log_level = logging.INFO
+    logging.getLogger().setLevel(log_level)
     print("START")
     boreholeGUI.register()
     # tool.Logging.set_log_level(log_level)

@@ -24,3 +24,7 @@ class Stratum(boreholeGUI.core.tool.Stratum):
     def get_cli(cls):
         from boreholeCreator.tool import Stratum as cli
         return cli
+
+    @classmethod
+    def get_dataframe(cls):
+        return cls.get_properties().dataframe

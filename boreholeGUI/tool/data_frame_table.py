@@ -89,8 +89,26 @@ class DataFrameTable:
         fill_column.triggered.connect(lambda: cls.fill_column_at(pos, widget))
         clear_column = menu.addAction("Clear Column")
         clear_column.triggered.connect(lambda: cls.clear_column_at(pos, widget))
+
+        tv = cls.get_table_view(widget).horizontalHeader()
+        logical_index = tv.logicalIndexAt(pos)
+        missing_titles = cls.get_missing_required_columns(widget)
+        if not missing_titles:
+            return menu
+
+        sub_menu = menu.addMenu("Umbenennen")
+        cls.get_properties().actions = list()
+        for title in missing_titles:
+            sub_menu.addAction(title).triggered.connect(lambda _, t=title: cls.rename_column(widget, logical_index, t))
+
+
         return menu
 
+    @classmethod
+    def rename_column(cls, widget, index, t):
+        df = cls.get_dataframe(widget)
+        df = df.rename(columns={list(df)[index]: t})
+        cls.set_dataframe(df, widget)
     @classmethod
     def add_column(cls, widget: ui.Widget):
         df = cls.get_dataframe(widget)
@@ -124,7 +142,7 @@ class DataFrameTable:
         widget_tool = cls.get_tool_from_widget(widget)
         widget_tool_cli = widget_tool.get_cli()
         existing_column_names = set(cls.get_column_names(widget))
-        required_column_names = set(widget_tool_cli.get_required_collumns())
+        required_column_names = set(widget_tool_cli.get_required_columns())
         missing_column_names = sorted(required_column_names.difference(existing_column_names))
         return missing_column_names
 

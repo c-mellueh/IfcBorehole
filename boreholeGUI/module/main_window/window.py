@@ -9,7 +9,9 @@
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect)
-from PySide6.QtWidgets import (QMenuBar, QStatusBar, QToolBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QHBoxLayout, QMenuBar,
+                               QPushButton, QSizePolicy, QSpacerItem, QStatusBar,
+                               QToolBox, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -24,10 +26,23 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName(u"toolBox")
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
-        self.page_2.setGeometry(QRect(0, 0, 969, 536))
+        self.page_2.setGeometry(QRect(0, 0, 969, 504))
         self.toolBox.addItem(self.page_2, u"Page 2")
 
         self.verticalLayout.addWidget(self.toolBox)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.pushButton = QPushButton(self.centralwidget)
+        self.pushButton.setObjectName(u"pushButton")
+
+        self.horizontalLayout.addWidget(self.pushButton)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -42,6 +57,7 @@ class Ui_MainWindow(object):
 
         self.toolBox.setCurrentIndex(0)
 
+
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
@@ -49,4 +65,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2),
                                  QCoreApplication.translate("MainWindow", u"Page 2", None))
+        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Run", None))
     # retranslateUi
+

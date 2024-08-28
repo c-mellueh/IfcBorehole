@@ -9,7 +9,7 @@ IFC_TYPE = "ifc_type"
 HEIGHT = "height"
 IFC_GUID = "ifc_guid"
 BOREHOLE_REQUIRED = [ID, NAME, X, Y, Z, IFC_TYPE, HEIGHT, IFC_GUID]
-
+BOREHOLE_REQUIRED_DATATYPES = [str, str, float, float, float, str, float, str]
 RED = "red"
 GREEN = "green"
 BLUE = "blue"

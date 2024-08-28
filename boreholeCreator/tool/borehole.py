@@ -54,8 +54,19 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         return trigger.create_stratum(row, stratum_index, borehole_placement)
 
     @classmethod
-    def get_required_collumns(cls) -> list[str]:
+    def get_required_columns(cls) -> list[str]:
         return prop.BOREHOLE_REQUIRED
+
+    @classmethod
+    def set_correct_datatypes(cls, dataframe: pd.DataFrame) -> pd.DataFrame:
+        for name, datatype in zip(cls.get_required_columns(), cls.get_required_columns_datatype()):
+            dataframe[name] = dataframe[name].astype(datatype)
+        return dataframe
+
+    @classmethod
+    def get_required_columns_datatype(cls) -> list:
+        return prop.BOREHOLE_REQUIRED_DATATYPES
+
 
     @classmethod
     def get_optional_collumns(cls) -> dict[str, Any]:
@@ -68,7 +79,7 @@ class Borehole(boreholeCreator.core.tool.Borehole):
             if col_name not in df_header:
                 tool.Util.add_column(cls.get_dataframe(), col_name, default)
 
-        for col_name in cls.get_required_collumns():
+        for col_name in cls.get_required_columns():
             if col_name not in df_header:
                 logging.error(f"Column '{col_name}' not found in Borehole dataframe")
                 return False

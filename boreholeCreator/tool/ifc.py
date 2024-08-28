@@ -29,6 +29,10 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         return ifcopenshell.guid.compress(uuid.uuid1().hex)
 
     @classmethod
+    def reset_file(cls):
+        cls.get_properties().ifcfile = None
+
+    @classmethod
     def get_ifcfile(cls) -> ifcopenshell.file:
         if cls.get_properties().ifcfile is None:
             cls.get_properties().ifcfile = cls.create_base_ifc()
@@ -218,7 +222,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     def assign_entities_to_site(cls, entities: list[ifcopenshell.entity_instance]):
         ifcfile = cls.get_ifcfile()
         site = cls.get_site()
-        container = ifcopenshell.create_entity("IFCRELCONTAINEDINSPATIALSTRUCTURE")
+        container = ifcfile.create_entity("IFCRELCONTAINEDINSPATIALSTRUCTURE")
         container.OwnerHistory = cls.get_owner_history()
         container.RelatedElements = entities
         container.RelatingStructure = site

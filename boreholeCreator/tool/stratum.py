@@ -49,8 +49,12 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         return stratum_df[stratum_df[prop.BOREHOLE_ID] == borehole_id]
 
     @classmethod
-    def get_required_collumns(cls):
+    def get_required_columns(cls):
         return prop.STRATUM_REQUIRED
+
+    @classmethod
+    def get_required_columns_datatype(cls):
+        return prop.STRATUM_REQUIRED_DATATYPE
 
     @classmethod
     def get_optional_collumns(cls):
@@ -63,7 +67,7 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         for col_name, default in prop.STRATUM_OPTIONAL.items():
             if col_name not in df_header:
                 tool.Util.add_column(df, col_name, default)
-        for col_name in cls.get_required_collumns():
+        for col_name in cls.get_required_columns():
             if col_name not in df_header:
                 logging.error(f"Column '{col_name}' not found in Stratum dataframe")
                 return False
@@ -73,3 +77,9 @@ class Stratum(boreholeCreator.core.tool.Stratum):
     def reset_dataframe(cls):
         df = pd.DataFrame({k: [] for k in prop.STRATUM_REQUIRED + list(prop.STRATUM_OPTIONAL.keys())})
         cls.get_properties().stratum_dataframe = df
+
+    @classmethod
+    def set_correct_datatypes(cls, dataframe: pd.DataFrame):
+        for name, datatype in zip(cls.get_required_columns(), cls.get_required_columns_datatype()):
+            dataframe[name] = dataframe[name].astype(datatype)
+        return dataframe

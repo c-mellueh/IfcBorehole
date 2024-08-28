@@ -13,7 +13,6 @@ def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum])
         stratums = stratum.get_stratums_by_borehole_id(row[prop.ID])
         if stratums.empty:
             ifc_borehole = borehole.create_unnested_boreholes(row)
-
         else:
             ifc_borehole = borehole.create_nested_borehole(row, stratums)
         borehole_dataframe.at[index, prop.IFC_GUID] = ifc_borehole.GlobalId
