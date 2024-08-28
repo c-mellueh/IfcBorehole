@@ -77,9 +77,12 @@ def activate_mapconversion_toggled(settings: Type[tool.Settings]):
 
 
 def create_ui_triggers(settings: Type[tool.Settings]):
+    def none_handler(v):
+        return None if v == "None" else v
+
     for widget, getter, setter in settings.get_settings_list():
         if isinstance(widget, QLineEdit):
-            widget.textEdited.connect(setter)
+            widget.textEdited.connect(lambda v, s=setter: s(none_handler(v)))
 
         elif isinstance(widget, QComboBox):
             widget.currentTextChanged.connect(setter)
@@ -89,6 +92,7 @@ def create_ui_triggers(settings: Type[tool.Settings]):
 
         elif isinstance(widget, QCheckBox):
             widget.checkStateChanged.connect(lambda checked, w=widget: setter(w.isChecked()))
+
 
 
 def paint_event(settings: Type[tool.Settings]):
@@ -104,4 +108,7 @@ def paint_event(settings: Type[tool.Settings]):
             widget.setValue(value)
 
         elif isinstance(widget, QCheckBox) and widget.isChecked() != value:
+            print(widget, value, getter)
             widget.setChecked(value)
+
+        widget.setToolTip(str(type(value)))
