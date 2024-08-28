@@ -35,7 +35,6 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
     logging.info("Create Boreholes")
 
     boreholes = borehole.create_boreholes()
-    print(boreholes)
     logging.info("Assign Boreholes to Site")
 
     ifc.assign_entities_to_site(boreholes)

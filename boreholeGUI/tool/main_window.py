@@ -5,6 +5,7 @@ import os
 from typing import TYPE_CHECKING
 
 from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import  QAction,QKeySequence,QShortcut
 
 import boreholeGUI
 import boreholeGUI.core.tool
@@ -33,15 +34,36 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
 
     @classmethod
     def create_trigger(cls):
-        ui = cls.get_ui()
-        ui.bu_select_path.clicked.connect(trigger.select_ifc_clicked)
-        ui.bu_run.clicked.connect(trigger.run_clicked)
-
+        cls.get_ui().bu_select_path.clicked.connect(trigger.select_ifc_clicked)
+        cls.get_ui().bu_run.clicked.connect(trigger.run_clicked)
+        cls.get_properties().shortcuts = list()
+        shortcut = QShortcut(QKeySequence("Ctrl+Shift+C"),cls.get())
+        cls.get_properties().shortcuts.append(shortcut)
+        shortcut.activated.connect(cls.toggle_console)
     @classmethod
     def hide_console(cls):
         hWnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hWnd != 0:
             ctypes.windll.user32.ShowWindow(hWnd, 0)
+
+    @classmethod
+    def show_console(cls):
+        console_window = ctypes.windll.kernel32.GetConsoleWindow()
+        if console_window != 0:
+            # Check if the console is visible
+            ctypes.windll.user32.ShowWindow(console_window, 5)  # Show the console
+
+    @classmethod
+    def toggle_console(cls):
+        active_window = cls.get_properties().application.activeWindow()
+        hWnd = ctypes.windll.kernel32.GetConsoleWindow()
+        if hWnd == 0:
+            return
+        if ctypes.windll.user32.IsWindowVisible(hWnd):
+            cls.hide_console()
+        else:
+            cls.show_console()
+        active_window.activateWindow()
 
     @classmethod
     def add_step(cls, name, widget):

@@ -11,3 +11,4 @@ class MainWindowProperties:
     step_list: list[tuple[str, QWidget]] = list()
     ui: Ui_MainWindow = None
     application: QApplication = None
+    shortcuts = list()

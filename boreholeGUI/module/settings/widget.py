@@ -8,10 +8,16 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QMetaObject, Qt)
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox,
-                               QFormLayout, QFrame, QLabel, QLineEdit,
-                               QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
+    QFormLayout, QFrame, QLabel, QLineEdit,
+    QSizePolicy, QTabWidget, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -336,15 +342,14 @@ class Ui_Form(object):
         self.la_company_name.setText(QCoreApplication.translate("Form", u"Name", None))
         self.la_company_description.setText(QCoreApplication.translate("Form", u"Description", None))
         self.la_fileschema.setText(QCoreApplication.translate("Form", u"FileSchema", None))
-        self.cb_file_schema.setItemText(0, QCoreApplication.translate("Form", u"IFC2X3", None))
+        self.cb_file_schema.setItemText(0, QCoreApplication.translate("Form", u"IFC4X3_ADD2", None))
         self.cb_file_schema.setItemText(1, QCoreApplication.translate("Form", u"IFC4", None))
-        self.cb_file_schema.setItemText(2, QCoreApplication.translate("Form", u"IFC4X3_ADD2", None))
+        self.cb_file_schema.setItemText(2, QCoreApplication.translate("Form", u"IFC2X3", None))
 
-        self.cb_file_schema.setCurrentText(QCoreApplication.translate("Form", u"IFC2X3", None))
+        self.cb_file_schema.setCurrentText(QCoreApplication.translate("Form", u"IFC4X3_ADD2", None))
         self.la_default_pset_name.setText(QCoreApplication.translate("Form", u"Default Pset Name", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"BoreHole Radius", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab),
-                                  QCoreApplication.translate("Form", u"General", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Form", u"General", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Activate IfcMapConversion", None))
         self.cb_mapconversion.setText("")
         self.le_map_conv.setText(QCoreApplication.translate("Form", u"IfcMapConversion", None))
@@ -361,7 +366,6 @@ class Ui_Form(object):
         self.la_vertical_datum.setText(QCoreApplication.translate("Form", u"VerticalDatum", None))
         self.la_map_projection.setText(QCoreApplication.translate("Form", u"MapProjection", None))
         self.le_crs_map_zone.setText(QCoreApplication.translate("Form", u"MapZone", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3),
-                                  QCoreApplication.translate("Form", u"Location", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("Form", u"Location", None))
     # retranslateUi
 

@@ -2,7 +2,7 @@ import logging
 import sys
 
 
-def main(initial_file: str | None = None, log_level=None):
+def main(log_level=None):
     from PySide6.QtWidgets import QApplication
     import boreholeGUI.core.main_window
     from boreholeGUI import tool
@@ -11,13 +11,10 @@ def main(initial_file: str | None = None, log_level=None):
     logging.getLogger().setLevel(log_level)
     print("START")
     boreholeGUI.register()
-    # tool.Logging.set_log_level(log_level)
     app = QApplication(sys.argv)
     boreholeGUI.load_ui_triggers()
     boreholeGUI.core.main_window.create_main_window(app, tool.MainWindow)
-
-    # core.project.create_project(tool.Project)
-    # core.main_window.create_menus(tool.MainWindow, tool.Util)
-    # if initial_file is not None:
-    #     core.project.open_project(initial_file, tool.Project)
     sys.exit(app.exec())
+
+if __name__ == '__main__':
+    main()

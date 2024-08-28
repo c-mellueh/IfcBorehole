@@ -18,7 +18,7 @@ class IfcProperties:
     project_gobal_id = ifcopenshell.guid.compress(uuid.uuid1().hex)
     project_name = "defaultProjectName"
     file_name = "defaultFileName.ifc"
-    file_schema = "IFC4X3"
+    file_schema = "IFC4X3_ADD2"
     pset_base_name = "DefaultPset"
 
     owner_history: ifcopenshell.entity_instance = None
