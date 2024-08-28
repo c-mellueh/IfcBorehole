@@ -74,14 +74,14 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         template = f"""ISO-10303-21;
         HEADER;
         FILE_DESCRIPTION(('ViewDefinition[CoordinationView]'),'2;1');
-        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{prop.application}','{prop.application}','');
+        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{prop.application_name}','{prop.application_name}','');
         FILE_SCHEMA(('{prop.file_schema}'));
         ENDSEC;
         DATA;
         #1=IFCPERSON($,$,'{creator_name}',$,$,$,$,$);
         #2=IFCORGANIZATION($,'{organization_name}',$,$,$);
         #3=IFCPERSONANDORGANIZATION(#1,#2,$);
-        #4=IFCAPPLICATION(#2,'{prop.application_version}','{prop.application}','');
+        #4=IFCAPPLICATION(#2,'{prop.application_version}','{prop.application_name}','');
         #5=IFCOWNERHISTORY(#3,#4,$,.ADDED.,{timestamp},#3,#4,{timestamp});
         #6=IFCDIRECTION((1.,0.,0.));
         #7=IFCDIRECTION((0.,0.,1.));
