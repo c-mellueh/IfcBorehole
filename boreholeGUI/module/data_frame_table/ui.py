@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pandas as pd
-from PySide6.QtCore import QAbstractTableModel, Qt
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PySide6.QtWidgets import QCompleter, QDialog, QHeaderView, QLineEdit, QTableView, QWidget
 
 from boreholeGUI.icons import get_icon
@@ -78,6 +78,11 @@ class DataFrameModel(QAbstractTableModel):
         self._dataframe = df
         self.endResetModel()
 
+    def insertColumn(self, column, header_name, prefill=None):
+        self.beginInsertColumns(QModelIndex(), column, column)
+        self._dataframe.insert(column, header_name, prefill)
+        self.endInsertColumns()
+
 
 class DataFrameHeaderView(QHeaderView):
     def __init__(self, orientation, dataframe, parent=None):
@@ -133,6 +138,8 @@ class TableView(QTableView):
         from . import trigger
         trigger.paint_table(self.parentWidget())
 
+    def model(self) -> DataFrameModel:
+        return super().model()
 
 class SelectDialog(QDialog):
     def __init__(self, *args, **kwargs):

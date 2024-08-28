@@ -9,7 +9,7 @@ from PySide6.QtCore import Qt
 import pandas as pd
 from boreholeGUI.module.data_frame_table import ui, trigger
 import boreholeGUI
-
+from boreholeCreator.tool import Util as CliUtil
 import geopandas as gpd
 
 class DataFrameTable:
@@ -87,15 +87,16 @@ class DataFrameTable:
     @classmethod
     def create_header_context_menu(cls, pos, widget: ui.Widget):
         menu = QMenu(widget)
-        add_column = menu.addAction("Add Column")
-        add_column.triggered.connect(lambda: cls.add_column(widget))
-        fill_column = menu.addAction("Fill Column With Value")
-        fill_column.triggered.connect(lambda: cls.fill_column_at(pos, widget))
-        clear_column = menu.addAction("Clear Column")
-        clear_column.triggered.connect(lambda: cls.clear_column_at(pos, widget))
+        table_view = cls.get_table_view(widget).horizontalHeader()
+        logical_index = table_view.logicalIndexAt(pos)
 
-        tv = cls.get_table_view(widget).horizontalHeader()
-        logical_index = tv.logicalIndexAt(pos)
+        add_column = menu.addAction("Add Column")
+        add_column.triggered.connect(lambda: cls.add_column(logical_index + 1, widget))
+        fill_column = menu.addAction("Fill Column With Value")
+        fill_column.triggered.connect(lambda: cls.fill_column_at(logical_index, widget))
+        clear_column = menu.addAction("Clear Column")
+        clear_column.triggered.connect(lambda: cls.clear_column_at(logical_index, widget))
+
         missing_titles = cls.get_missing_required_columns(widget)
         if not missing_titles:
             return menu
@@ -114,19 +115,15 @@ class DataFrameTable:
         cls.set_dataframe(df, widget)
 
     @classmethod
-    def add_column(cls, widget: ui.Widget):
+    def add_column(cls, index, widget: ui.Widget, column_name=None, prefill=None):
         df = cls.get_dataframe(widget)
-        from boreholeCreator.tool import Util
-        new_name = Util.get_new_name("New Column", list(df))
-        Util.add_column(df, new_name)
-        header_view = cls.get_table_view(widget).horizontalHeader()  # Refreshs View
-        header_view.model().setHeaderData(0, header_view.orientation(), list(df)[0], Qt.EditRole)
+        if column_name is None:
+            column_name = CliUtil.get_new_name("New Column", list(df))
+        table_view = cls.get_table_view(widget)
+        table_view.model().insertColumn(index, column_name, prefill)
 
     @classmethod
-    def fill_column_at(cls, pos, widget: ui.Widget):
-        tv = cls.get_table_view(widget).horizontalHeader()
-        logical_index = tv.logicalIndexAt(pos)
-
+    def fill_column_at(cls, logical_index, widget: ui.Widget):
         from boreholeGUI import tool
         answer = tool.Popups.request_text_input("Fill Column with Values", "Value:", "100", widget)
         if answer is None:
@@ -135,9 +132,7 @@ class DataFrameTable:
         df[list(df)[logical_index]] = answer
 
     @classmethod
-    def clear_column_at(cls, pos, widget: ui.Widget):
-        tv = cls.get_table_view(widget).horizontalHeader()
-        logical_index = tv.logicalIndexAt(pos)
+    def clear_column_at(cls, logical_index, widget: ui.Widget):
         df = cls.get_dataframe(widget)
         df[list(df)[logical_index]] = None
 
