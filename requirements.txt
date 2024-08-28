@@ -5,3 +5,4 @@ ifcopenshell
 numpy
 geopandas
 pyqtconsole
+fiona
