@@ -2,9 +2,9 @@ import importlib
 
 modules = {
     "main_window": [None, "main_window"],
+    "settings": [None, "settings"],
     "borehole": [None, "borehole"],
     "stratum":  [None, "stratum"],
-    "color":    [None, "color"],
     "data_frame_table": [None, "data_frame_table"],
 }
 

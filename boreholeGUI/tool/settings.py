@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 from PySide6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
-    from boreholeGUI.module.color.prop import ColorProperties
+    from boreholeGUI.module.settings.prop import SettingsProperties
 import boreholeGUI.core.tool
 
 
-class Color(boreholeGUI.core.tool.Color):
+class Settings(boreholeGUI.core.tool.Settings):
     @classmethod
-    def get_properties(cls) -> ColorProperties:
-        return boreholeGUI.ColorProperties
+    def get_properties(cls) -> SettingsProperties:
+        return boreholeGUI.SettingsProperties
 
     @classmethod
     def get_widget(cls):

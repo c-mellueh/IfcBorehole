@@ -2,7 +2,7 @@ class MainWindow:
     pass
 
 
-class Color:
+class Settings:
     pass
 
 

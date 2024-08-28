@@ -3,7 +3,7 @@ from . import prop, trigger
 
 
 def register():
-    boreholeGUI.ColorProperties = prop.ColorProperties()
+    boreholeGUI.SettingsProperties = prop.SettingsProperties()
 
 
 def load_ui_triggers():

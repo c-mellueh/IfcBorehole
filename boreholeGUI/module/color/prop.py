@@ -1,2 +1,0 @@
-class ColorProperties:
-    widget = None
