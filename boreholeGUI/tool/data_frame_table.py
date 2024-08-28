@@ -39,6 +39,7 @@ class DataFrameTable:
     @classmethod
     def set_dataframe(cls, dataframe: pd.DataFrame, widget: ui.Widget):
         table_view = cls.get_table_view(widget)
+        v = table_view.horizontalScrollBar().value()
         model = ui.DataFrameModel(dataframe)
 
         table_view.setModel(model)
@@ -49,6 +50,8 @@ class DataFrameTable:
         table_view.setHorizontalHeader(header_view)
         header_view.show()
         header_view.customContextMenuRequested.connect(lambda pos: trigger.header_context_menu_requested(widget, pos))
+        table_view.horizontalScrollBar().setValue(0)  # if not the scrollbar creates a mismatch to view
+        table_view.horizontalScrollBar().setValue(v)
 
 
     @classmethod
@@ -101,7 +104,6 @@ class DataFrameTable:
         for title in missing_titles:
             sub_menu.addAction(title).triggered.connect(lambda _, t=title: cls.rename_column(widget, logical_index, t))
 
-
         return menu
 
     @classmethod
@@ -109,6 +111,7 @@ class DataFrameTable:
         df = cls.get_dataframe(widget)
         df = df.rename(columns={list(df)[index]: t})
         cls.set_dataframe(df, widget)
+
     @classmethod
     def add_column(cls, widget: ui.Widget):
         df = cls.get_dataframe(widget)
