@@ -302,6 +302,7 @@ class Ui_Form(object):
 
         self.formLayout_4.setWidget(13, QFormLayout.FieldRole, self.le_mapzone)
 
+
         self.formLayout_3.setWidget(1, QFormLayout.SpanningRole, self.wi_map_conversion)
 
         self.tabWidget.addTab(self.tab_3, "")
@@ -311,7 +312,7 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(Form)
