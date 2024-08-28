@@ -33,6 +33,10 @@ class Location:
         cls.get_properties().map_conversion_data[attribute_name] = value
 
     @classmethod
+    def get_map_conversion_attribute(cls, attribute_name: str) -> Any:
+        return cls.get_properties().map_conversion_data.get(attribute_name)
+
+    @classmethod
     def set_projected_crs_attribute(cls, attribute_name, value: Any):
         """
 
@@ -41,6 +45,10 @@ class Location:
         :return:
         """
         cls.get_properties().projected_crs_data[attribute_name] = value
+
+    @classmethod
+    def get_projected_crs_attribute(cls, attribute_name: str) -> Any:
+        return cls.get_properties().projected_crs_data.get(attribute_name)
 
     @classmethod
     def get_site_position(cls):

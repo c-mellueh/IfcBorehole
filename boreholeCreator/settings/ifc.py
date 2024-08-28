@@ -30,11 +30,11 @@ class Ifc:
         return cls.get_properties().application_version
 
     @classmethod
-    def set_creator_attribute(cls, name, value):
+    def set_author_attribute(cls, name, value):
         cls.get_properties().creator[name] = value
 
     @classmethod
-    def get_creator_attribute(cls, name):
+    def get_author_attribute(cls, name):
         return cls.get_properties().creator.get(name)
 
     @classmethod

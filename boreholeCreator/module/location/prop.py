@@ -15,6 +15,6 @@ class LocationProperties:
         "Northings":        0.,
         "OrthogonalHeight": 0.,
         "XAxisAbscissa":    None,
-        "YAxisAbscissa":    None,
+        "XAxisOrdinate": None,
         "Scale":            None
     }

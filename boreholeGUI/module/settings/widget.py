@@ -9,8 +9,9 @@
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QMetaObject, Qt)
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QFormLayout,
-                               QFrame, QLabel, QLineEdit, QSlider, QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox,
+                               QFormLayout, QFrame, QLabel, QLineEdit,
+                               QTabWidget, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -104,10 +105,10 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(9, QFormLayout.LabelRole, self.la_company_description)
 
-        self.le_description = QLineEdit(self.tab)
-        self.le_description.setObjectName(u"le_description")
+        self.le_company_description = QLineEdit(self.tab)
+        self.le_company_description.setObjectName(u"le_company_description")
 
-        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.le_description)
+        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.le_company_description)
 
         self.line_3 = QFrame(self.tab)
         self.line_3.setObjectName(u"line_3")
@@ -144,11 +145,12 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(13, QFormLayout.LabelRole, self.label_3)
 
-        self.horizontalSlider_2 = QSlider(self.tab)
-        self.horizontalSlider_2.setObjectName(u"horizontalSlider_2")
-        self.horizontalSlider_2.setOrientation(Qt.Horizontal)
+        self.sb_radius = QDoubleSpinBox(self.tab)
+        self.sb_radius.setObjectName(u"sb_radius")
+        self.sb_radius.setMaximum(15.000000000000000)
+        self.sb_radius.setSingleStep(0.250000000000000)
 
-        self.formLayout.setWidget(13, QFormLayout.FieldRole, self.horizontalSlider_2)
+        self.formLayout.setWidget(13, QFormLayout.FieldRole, self.sb_radius)
 
         self.tabWidget.addTab(self.tab, "")
         self.tab_3 = QWidget()
@@ -160,147 +162,147 @@ class Ui_Form(object):
 
         self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.label_2)
 
-        self.checkBox = QCheckBox(self.tab_3)
-        self.checkBox.setObjectName(u"checkBox")
-        self.checkBox.setLayoutDirection(Qt.LeftToRight)
+        self.cb_mapconversion = QCheckBox(self.tab_3)
+        self.cb_mapconversion.setObjectName(u"cb_mapconversion")
+        self.cb_mapconversion.setLayoutDirection(Qt.LeftToRight)
 
-        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.checkBox)
+        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.cb_mapconversion)
 
-        self.widget = QWidget(self.tab_3)
-        self.widget.setObjectName(u"widget")
-        self.formLayout_4 = QFormLayout(self.widget)
+        self.wi_map_conversion = QWidget(self.tab_3)
+        self.wi_map_conversion.setObjectName(u"wi_map_conversion")
+        self.formLayout_4 = QFormLayout(self.wi_map_conversion)
         self.formLayout_4.setObjectName(u"formLayout_4")
-        self.le_map_conv_easting = QLabel(self.widget)
+        self.le_map_conv_easting = QLabel(self.wi_map_conversion)
         self.le_map_conv_easting.setObjectName(u"le_map_conv_easting")
 
         self.formLayout_4.setWidget(1, QFormLayout.LabelRole, self.le_map_conv_easting)
 
-        self.le_eastings = QLineEdit(self.widget)
+        self.le_eastings = QLineEdit(self.wi_map_conversion)
         self.le_eastings.setObjectName(u"le_eastings")
 
         self.formLayout_4.setWidget(1, QFormLayout.FieldRole, self.le_eastings)
 
-        self.le_map_conv_northing = QLabel(self.widget)
+        self.le_map_conv_northing = QLabel(self.wi_map_conversion)
         self.le_map_conv_northing.setObjectName(u"le_map_conv_northing")
 
         self.formLayout_4.setWidget(2, QFormLayout.LabelRole, self.le_map_conv_northing)
 
-        self.le_northings = QLineEdit(self.widget)
+        self.le_northings = QLineEdit(self.wi_map_conversion)
         self.le_northings.setObjectName(u"le_northings")
 
         self.formLayout_4.setWidget(2, QFormLayout.FieldRole, self.le_northings)
 
-        self.le_map_conv_orth_height = QLabel(self.widget)
+        self.le_map_conv_orth_height = QLabel(self.wi_map_conversion)
         self.le_map_conv_orth_height.setObjectName(u"le_map_conv_orth_height")
 
         self.formLayout_4.setWidget(3, QFormLayout.LabelRole, self.le_map_conv_orth_height)
 
-        self.le_orthogonal_height = QLineEdit(self.widget)
+        self.le_orthogonal_height = QLineEdit(self.wi_map_conversion)
         self.le_orthogonal_height.setObjectName(u"le_orthogonal_height")
 
         self.formLayout_4.setWidget(3, QFormLayout.FieldRole, self.le_orthogonal_height)
 
-        self.le_map_conv_xaxis_absc = QLabel(self.widget)
+        self.le_map_conv_xaxis_absc = QLabel(self.wi_map_conversion)
         self.le_map_conv_xaxis_absc.setObjectName(u"le_map_conv_xaxis_absc")
 
         self.formLayout_4.setWidget(4, QFormLayout.LabelRole, self.le_map_conv_xaxis_absc)
 
-        self.le_x_axis_abscissa = QLineEdit(self.widget)
+        self.le_x_axis_abscissa = QLineEdit(self.wi_map_conversion)
         self.le_x_axis_abscissa.setObjectName(u"le_x_axis_abscissa")
 
         self.formLayout_4.setWidget(4, QFormLayout.FieldRole, self.le_x_axis_abscissa)
 
-        self.le_map_conv_xaxis_ord = QLabel(self.widget)
+        self.le_map_conv_xaxis_ord = QLabel(self.wi_map_conversion)
         self.le_map_conv_xaxis_ord.setObjectName(u"le_map_conv_xaxis_ord")
 
         self.formLayout_4.setWidget(5, QFormLayout.LabelRole, self.le_map_conv_xaxis_ord)
 
-        self.le_x_axis_ordinate = QLineEdit(self.widget)
+        self.le_x_axis_ordinate = QLineEdit(self.wi_map_conversion)
         self.le_x_axis_ordinate.setObjectName(u"le_x_axis_ordinate")
 
         self.formLayout_4.setWidget(5, QFormLayout.FieldRole, self.le_x_axis_ordinate)
 
-        self.le_map_conv_scale = QLabel(self.widget)
+        self.le_map_conv_scale = QLabel(self.wi_map_conversion)
         self.le_map_conv_scale.setObjectName(u"le_map_conv_scale")
 
         self.formLayout_4.setWidget(6, QFormLayout.LabelRole, self.le_map_conv_scale)
 
-        self.le_scale = QLineEdit(self.widget)
+        self.le_scale = QLineEdit(self.wi_map_conversion)
         self.le_scale.setObjectName(u"le_scale")
 
         self.formLayout_4.setWidget(6, QFormLayout.FieldRole, self.le_scale)
 
-        self.le_map_conv = QLabel(self.widget)
+        self.le_map_conv = QLabel(self.wi_map_conversion)
         self.le_map_conv.setObjectName(u"le_map_conv")
 
         self.formLayout_4.setWidget(0, QFormLayout.SpanningRole, self.le_map_conv)
 
-        self.la_crs = QLabel(self.widget)
+        self.la_crs = QLabel(self.wi_map_conversion)
         self.la_crs.setObjectName(u"la_crs")
 
         self.formLayout_4.setWidget(7, QFormLayout.SpanningRole, self.la_crs)
 
-        self.la_crs_name = QLabel(self.widget)
+        self.la_crs_name = QLabel(self.wi_map_conversion)
         self.la_crs_name.setObjectName(u"la_crs_name")
 
         self.formLayout_4.setWidget(8, QFormLayout.LabelRole, self.la_crs_name)
 
-        self.la_crs_description = QLabel(self.widget)
+        self.la_crs_description = QLabel(self.wi_map_conversion)
         self.la_crs_description.setObjectName(u"la_crs_description")
 
         self.formLayout_4.setWidget(9, QFormLayout.LabelRole, self.la_crs_description)
 
-        self.la_geodetic_datum = QLabel(self.widget)
+        self.la_geodetic_datum = QLabel(self.wi_map_conversion)
         self.la_geodetic_datum.setObjectName(u"la_geodetic_datum")
 
         self.formLayout_4.setWidget(10, QFormLayout.LabelRole, self.la_geodetic_datum)
 
-        self.la_vertical_datum = QLabel(self.widget)
+        self.la_vertical_datum = QLabel(self.wi_map_conversion)
         self.la_vertical_datum.setObjectName(u"la_vertical_datum")
 
         self.formLayout_4.setWidget(11, QFormLayout.LabelRole, self.la_vertical_datum)
 
-        self.la_map_projection = QLabel(self.widget)
+        self.la_map_projection = QLabel(self.wi_map_conversion)
         self.la_map_projection.setObjectName(u"la_map_projection")
 
         self.formLayout_4.setWidget(12, QFormLayout.LabelRole, self.la_map_projection)
 
-        self.le_crs_description = QLineEdit(self.widget)
+        self.le_crs_description = QLineEdit(self.wi_map_conversion)
         self.le_crs_description.setObjectName(u"le_crs_description")
 
         self.formLayout_4.setWidget(9, QFormLayout.FieldRole, self.le_crs_description)
 
-        self.le_crs_name = QLineEdit(self.widget)
+        self.le_crs_name = QLineEdit(self.wi_map_conversion)
         self.le_crs_name.setObjectName(u"le_crs_name")
 
         self.formLayout_4.setWidget(8, QFormLayout.FieldRole, self.le_crs_name)
 
-        self.le_geodetic_datum = QLineEdit(self.widget)
+        self.le_geodetic_datum = QLineEdit(self.wi_map_conversion)
         self.le_geodetic_datum.setObjectName(u"le_geodetic_datum")
 
         self.formLayout_4.setWidget(10, QFormLayout.FieldRole, self.le_geodetic_datum)
 
-        self.le_vertical_datum = QLineEdit(self.widget)
+        self.le_vertical_datum = QLineEdit(self.wi_map_conversion)
         self.le_vertical_datum.setObjectName(u"le_vertical_datum")
 
         self.formLayout_4.setWidget(11, QFormLayout.FieldRole, self.le_vertical_datum)
 
-        self.le_map_projection = QLineEdit(self.widget)
+        self.le_map_projection = QLineEdit(self.wi_map_conversion)
         self.le_map_projection.setObjectName(u"le_map_projection")
 
         self.formLayout_4.setWidget(12, QFormLayout.FieldRole, self.le_map_projection)
 
-        self.le_crs_map_zone = QLabel(self.widget)
+        self.le_crs_map_zone = QLabel(self.wi_map_conversion)
         self.le_crs_map_zone.setObjectName(u"le_crs_map_zone")
 
         self.formLayout_4.setWidget(13, QFormLayout.LabelRole, self.le_crs_map_zone)
 
-        self.le_mapzone = QLineEdit(self.widget)
+        self.le_mapzone = QLineEdit(self.wi_map_conversion)
         self.le_mapzone.setObjectName(u"le_mapzone")
 
         self.formLayout_4.setWidget(13, QFormLayout.FieldRole, self.le_mapzone)
 
-        self.formLayout_3.setWidget(1, QFormLayout.SpanningRole, self.widget)
+        self.formLayout_3.setWidget(1, QFormLayout.SpanningRole, self.wi_map_conversion)
 
         self.tabWidget.addTab(self.tab_3, "")
 
@@ -309,7 +311,7 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(Form)
@@ -336,7 +338,7 @@ class Ui_Form(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab),
                                   QCoreApplication.translate("Form", u"General", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Activate Mapconversion", None))
-        self.checkBox.setText("")
+        self.cb_mapconversion.setText("")
         self.le_map_conv_easting.setText(QCoreApplication.translate("Form", u"Eastings", None))
         self.le_map_conv_northing.setText(QCoreApplication.translate("Form", u"Nortings", None))
         self.le_map_conv_orth_height.setText(QCoreApplication.translate("Form", u"OrthogonalHeight", None))
