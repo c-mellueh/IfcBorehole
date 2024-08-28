@@ -4,6 +4,7 @@ import pandas as pd
 from PySide6.QtCore import QAbstractTableModel, Qt
 from PySide6.QtWidgets import QCompleter, QDialog, QHeaderView, QLineEdit, QTableView, QWidget
 
+from boreholeGUI.icons import get_icon
 from .select_dialog import Ui_Dialog
 
 
@@ -138,3 +139,4 @@ class SelectDialog(QDialog):
         super().__init__(*args, **kwargs)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+        self.setWindowIcon(get_icon())
