@@ -8,9 +8,9 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect)
-from PySide6.QtWidgets import (QHBoxLayout, QMenuBar,
-                               QPushButton, QSizePolicy, QSpacerItem, QStatusBar,
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect,
+                            QSize)
+from PySide6.QtWidgets import (QHBoxLayout, QLineEdit, QMenuBar, QPushButton, QStatusBar,
                                QToolBox, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
@@ -33,14 +33,22 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.le_export_path = QLineEdit(self.centralwidget)
+        self.le_export_path.setObjectName(u"le_export_path")
 
-        self.horizontalLayout.addItem(self.horizontalSpacer)
+        self.horizontalLayout.addWidget(self.le_export_path)
 
-        self.pushButton = QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(u"pushButton")
+        self.bu_select_path = QPushButton(self.centralwidget)
+        self.bu_select_path.setObjectName(u"bu_select_path")
+        self.bu_select_path.setMaximumSize(QSize(24, 16777215))
 
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.horizontalLayout.addWidget(self.bu_select_path)
+
+        self.bu_run = QPushButton(self.centralwidget)
+        self.bu_run.setObjectName(u"bu_run")
+
+        self.horizontalLayout.addWidget(self.bu_run)
+
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -65,6 +73,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2),
                                  QCoreApplication.translate("MainWindow", u"Page 2", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Run", None))
+        self.le_export_path.setPlaceholderText(QCoreApplication.translate("MainWindow", u"export path", None))
+        self.bu_select_path.setText(QCoreApplication.translate("MainWindow", u"...", None))
+        self.bu_run.setText(QCoreApplication.translate("MainWindow", u"Run", None))
     # retranslateUi
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ctypes
+import os
 from typing import TYPE_CHECKING
 
 from PySide6.QtWidgets import QApplication
@@ -19,9 +20,7 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
         return boreholeGUI.MainWindowProperties
 
     @classmethod
-    def get_main_window(cls, application: QApplication):
-        if cls.get_properties().main_window is None:
-            cls.create_main_window(application)
+    def get(cls):
         return cls.get_properties().main_window
 
     @classmethod
@@ -30,7 +29,13 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
         cls.get_properties().main_window = window
         cls.get_properties().ui = window.ui
         cls.get_properties().application = application
-        window.ui.pushButton.clicked.connect(trigger.run_clicked)
+        return window
+
+    @classmethod
+    def create_trigger(cls):
+        ui = cls.get_ui()
+        ui.bu_select_path.clicked.connect(trigger.select_ifc_clicked)
+        ui.bu_run.clicked.connect(trigger.run_clicked)
 
     @classmethod
     def hide_console(cls):
@@ -61,3 +66,15 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
     @classmethod
     def get_steplist(cls):
         return cls.get_properties().step_list
+
+    @classmethod
+    def set_export_path(cls, text: str):
+        cls.get_ui().le_export_path.setText(text)
+
+    @classmethod
+    def get_export_path(cls) -> str:
+        return cls.get_ui().le_export_path.text()
+
+    @classmethod
+    def is_file_path_valid(cls, path: str):
+        return os.path.exists(os.path.dirname(path))

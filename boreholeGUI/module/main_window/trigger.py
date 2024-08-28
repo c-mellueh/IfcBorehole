@@ -1,4 +1,4 @@
-from boreholeCreator import tool as cli_tool
+from boreholeCreator import settings as cli_settings
 from boreholeGUI import tool
 from boreholeGUI.core import main_window as core
 
@@ -6,6 +6,9 @@ from boreholeGUI.core import main_window as core
 def connect():
     pass
 
-
 def run_clicked():
-    core.run_clicked(tool.Borehole, tool.Stratum, cli_tool.Borehole, cli_tool.Stratum)
+    core.run_clicked(tool.MainWindow, tool.Borehole, tool.Stratum, tool.Settings, tool.Popups, cli_settings.Ifc)
+
+
+def select_ifc_clicked():
+    core.select_ifc_clicked(tool.MainWindow, tool.Popups)

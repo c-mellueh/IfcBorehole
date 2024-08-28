@@ -91,3 +91,13 @@ class Popups(boreholeGUI.core.tool.Popups):
             return answer[0]
         else:
             return None
+
+    @classmethod
+    def create_warning_popup(cls, text, title="Warning"):
+        msg_box = QMessageBox()
+        msg_box.setText(text)
+        msg_box.setWindowTitle(title)
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.exec()
+        # icon = get_icon()
+        # msg_box.setWindowIcon(icon)
