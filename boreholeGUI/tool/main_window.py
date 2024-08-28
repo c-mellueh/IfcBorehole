@@ -4,8 +4,8 @@ import ctypes
 import os
 from typing import TYPE_CHECKING
 
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import QApplication
-from PySide6.QtGui import  QAction,QKeySequence,QShortcut
 
 import boreholeGUI
 import boreholeGUI.core.tool
@@ -37,32 +37,52 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
         cls.get_ui().bu_select_path.clicked.connect(trigger.select_ifc_clicked)
         cls.get_ui().bu_run.clicked.connect(trigger.run_clicked)
         cls.get_properties().shortcuts = list()
-        shortcut = QShortcut(QKeySequence("Ctrl+Shift+C"),cls.get())
+        shortcut = QShortcut(QKeySequence("Shift+Alt+T"), cls.get())
+        cls.get_properties().shortcuts.append(shortcut)
+        shortcut.activated.connect(cls.toggle_terminal)
+
+        shortcut = QShortcut(QKeySequence("Shift+Alt+C"), cls.get())
         cls.get_properties().shortcuts.append(shortcut)
         shortcut.activated.connect(cls.toggle_console)
+
     @classmethod
-    def hide_console(cls):
+    def get_console(cls):
+        if cls.get_properties().console is None:
+            cls.get_properties().console = ui.Console()
+            cls.get_properties().console.eval_in_thread()
+        return cls.get_properties().console
+
+    @classmethod
+    def toggle_console(cls):
+        console = cls.get_console()
+        if console.isVisible():
+            console.hide()
+        else:
+            console.show()
+
+    @classmethod
+    def hide_terminal(cls):
         hWnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hWnd != 0:
             ctypes.windll.user32.ShowWindow(hWnd, 0)
 
     @classmethod
-    def show_console(cls):
+    def show_terminal(cls):
         console_window = ctypes.windll.kernel32.GetConsoleWindow()
         if console_window != 0:
             # Check if the console is visible
             ctypes.windll.user32.ShowWindow(console_window, 5)  # Show the console
 
     @classmethod
-    def toggle_console(cls):
+    def toggle_terminal(cls):
         active_window = cls.get_properties().application.activeWindow()
         hWnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hWnd == 0:
             return
         if ctypes.windll.user32.IsWindowVisible(hWnd):
-            cls.hide_console()
+            cls.hide_terminal()
         else:
-            cls.show_console()
+            cls.show_terminal()
         active_window.activateWindow()
 
     @classmethod

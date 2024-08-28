@@ -4,3 +4,4 @@ pandas
 ifcopenshell
 numpy
 geopandas
+pyqtconsole

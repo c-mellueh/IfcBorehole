@@ -15,7 +15,7 @@ def create_main_window(app, main_window: Type[tool.MainWindow]):
         widget.show()
     main_window.create_trigger()
     mw.show()
-    main_window.hide_console()
+    main_window.hide_terminal()
 
 
 def select_ifc_clicked(main_window: Type[tool.MainWindow], popups: Type[tool.Popups]):

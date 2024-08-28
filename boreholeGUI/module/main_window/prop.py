@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .window import Ui_MainWindow
     from PySide6.QtWidgets import QApplication, QWidget
-    from .ui import MainWindow
+    from .ui import Console, MainWindow
 class MainWindowProperties:
     main_window: MainWindow = None
     step_list: list[tuple[str, QWidget]] = list()
     ui: Ui_MainWindow = None
     application: QApplication = None
     shortcuts = list()
+    console: Console = None
