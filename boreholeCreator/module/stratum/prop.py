@@ -9,13 +9,14 @@ HEIGHT = "stratum_height"
 ID = "stratum_id"
 
 STRATUM_REQUIRED = [BOREHOLE_ID, NAME, SHAPE, IFC_TYPE, HEIGHT,
-                    ID, Z, IFC_GUID]
+                    ID, Z]
 STRATUM_REQUIRED_DATATYPE = [str, str, int, str, float, str, float, str]
 
 STRATUM_OPTIONAL = {RED:          0.5,  # Key & Default Value
                     GREEN:        0.5,
                     BLUE:         0.5,
-                    TRANSPARENCY: 0.}
+                    TRANSPARENCY: 0.,
+                    IFC_GUID:     ""}
 
 
 class StratumProperties:
