@@ -8,7 +8,7 @@ from boreholeGUI import tool
 import boreholeGUI.core.tool
 import os
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QInputDialog, QLineEdit
-
+from boreholeGUI.icons import get_icon
 
 class Popups(boreholeGUI.core.tool.Popups):
     @classmethod
@@ -48,10 +48,10 @@ class Popups(boreholeGUI.core.tool.Popups):
     @classmethod
     def create_info_popup(cls, text, title="Info", execute: bool = True):
         msg_box = QMessageBox()
-        # icon = get_icon()
-        # msg_box.setWindowIcon(icon)
         msg_box.setText(text)
         msg_box.setWindowTitle(title)
+        icon = get_icon()
+        msg_box.setWindowIcon(icon)
         msg_box.setIcon(QMessageBox.Icon.Information)
 
         if execute:
@@ -77,6 +77,6 @@ class Popups(boreholeGUI.core.tool.Popups):
         msg_box.setText(text)
         msg_box.setWindowTitle(title)
         msg_box.setIcon(QMessageBox.Icon.Warning)
+        icon = get_icon()
+        msg_box.setWindowIcon(icon)
         msg_box.exec()
-        # icon = get_icon()
-        # msg_box.setWindowIcon(icon)
