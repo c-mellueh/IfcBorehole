@@ -29,8 +29,16 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         return ifcopenshell.guid.compress(uuid.uuid1().hex)
 
     @classmethod
-    def reset_file(cls):
-        cls.get_properties().ifcfile = None
+    def reset(cls):
+        prop = cls.get_properties()
+        prop.ifcfile = None
+        prop.owner_history = None
+        prop.ifcfile = None
+        prop.project = None
+        prop.geometric_representation_context = None
+        prop.site = None
+        prop.ifc_person = None
+        prop.ifc_organization = None
 
     @classmethod
     def get_ifcfile(cls) -> ifcopenshell.file:

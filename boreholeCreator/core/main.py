@@ -22,7 +22,7 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
         logging.warning(warning_text.format("Stratum", "stratum"))
 
     logging.info("Create IFC-Template")
-    ifc.reset_file()
+    ifc.reset()
     file = ifc.get_ifcfile()
     if location.get_settings().mapconversion_is_activated():
         location.add_map_conversion(file)
