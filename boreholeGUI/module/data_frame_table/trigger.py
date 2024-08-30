@@ -24,3 +24,7 @@ def header_context_menu_requested(widget, pos):
 
 def dataframe_select_file_clicked(dialog):
     core.dataframe_select_file_clicked(dialog, tool.Popups)
+
+
+def request_tooltips():
+    return core.request_tooltips(tool.Stratum)

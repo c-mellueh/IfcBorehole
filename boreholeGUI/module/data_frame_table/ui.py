@@ -5,6 +5,7 @@ from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PySide6.QtWidgets import QCompleter, QDialog, QHeaderView, QLineEdit, QTableView, QWidget
 
 from boreholeGUI.icons import get_icon
+from . import trigger
 from .select_dialog import Ui_Dialog
 
 
@@ -43,11 +44,15 @@ class DataFrameModel(QAbstractTableModel):
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
+        tooltips = trigger.request_tooltips()
         if role == Qt.DisplayRole or role == Qt.EditRole:
             if orientation == Qt.Horizontal:
                 return str(self._dataframe.columns[section])
             elif orientation == Qt.Vertical:
                 return str(self._dataframe.index[section])
+        elif role == Qt.ItemDataRole.ToolTipRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return tooltips.get(list(self._dataframe)[section])
         return None
 
     def setHeaderData(self, section, orientation, value, role=Qt.EditRole):
@@ -77,6 +82,7 @@ class DataFrameModel(QAbstractTableModel):
         self.beginRemoveColumns(QModelIndex(), column, column + 1)
         self._dataframe.drop(list(self._dataframe)[column], axis=1, inplace=True)
         self.endRemoveColumns()
+
 
 class DataFrameHeaderView(QHeaderView):
     def __init__(self, orientation, model, parent=None):
@@ -115,6 +121,7 @@ class DataFrameHeaderView(QHeaderView):
 
     def model(self) -> DataFrameModel:
         return super().model()
+
 
 class Widget(QWidget):
     def __init__(self, *args, **kwargs):

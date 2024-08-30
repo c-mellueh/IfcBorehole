@@ -77,3 +77,7 @@ def dataframe_select_file_clicked(dialog: ui.SelectDialog, popups: Type[tool.Pop
         dialog.ui.comboBox.addItems(sheet_names)
     else:
         dialog.ui.comboBox.hide()
+
+
+def request_tooltips(stratum: Type[tool.Stratum]):
+    return stratum.get_tooltips()  # TODO: Improve Tooltip handling

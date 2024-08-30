@@ -36,8 +36,12 @@ class DataFrameTable:
         return widget.ui
 
     @classmethod
-    def get_table_view(cls, widget: ui.Widget):
+    def get_table_view(cls, widget: ui.Widget) -> ui.TableView:
         return cls.get_ui(widget).tableView
+
+    @classmethod
+    def get_model(cls, widget: ui.Widget) -> ui.DataFrameModel:
+        return cls.get_table_view(widget).model()
 
     @classmethod
     def set_dataframe(cls, dataframe: pd.DataFrame, widget: ui.Widget):
@@ -114,7 +118,7 @@ class DataFrameTable:
 
     @classmethod
     def remove_column(cls, index, widget):
-        model = cls.get_table_view(widget).model()
+        model = cls.get_model(widget)
         model.removeColumn(index)
 
     @classmethod
@@ -127,8 +131,7 @@ class DataFrameTable:
         df = cls.get_dataframe(widget)
         if column_name is None:
             column_name = CliUtil.get_new_name("New Column", list(df))
-        table_view = cls.get_table_view(widget)
-        table_view.model().insertColumn(index, column_name, prefill)
+        cls.get_model(widget).insertColumn(index, column_name, prefill)
 
     @classmethod
     def fill_column(cls, logical_index, widget: ui.Widget):
@@ -179,3 +182,4 @@ class DataFrameTable:
     def get_tooltips(cls, widget: ui.Widget):
         _tool = cls.get_tool_from_widget(widget)
         return _tool.get_tooltips()
+
