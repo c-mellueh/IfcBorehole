@@ -196,7 +196,9 @@ class Ifc(boreholeCreator.core.tool.Ifc):
                                             Tag=row[prop.ID],
                                             Representation=shape)
 
-        data = cls.create_pset_dict(row, prop.BOREHOLE_REQUIRED + list(prop.BOREHOLE_OPTIONAL.keys()))
+        optional_column_names = tool.Borehole.get_optional_column_names()
+        required_column_names = tool.Borehole.get_required_column_names()
+        data = cls.create_pset_dict(row, required_column_names + optional_column_names)
         cls.add_attributes(ifcborehole, data)
         return ifcborehole
 
@@ -217,7 +219,9 @@ class Ifc(boreholeCreator.core.tool.Ifc):
                                         Representation=shape,
                                         Tag=row[prop.ID], )
         stratum.OwnerHistory = owner_history
-        pset_dict = cls.create_pset_dict(row, prop.STRATUM_REQUIRED + list(prop.STRATUM_OPTIONAL.keys()))
+        required_column_names = tool.Stratum.get_required_column_names()
+        optional_column_names = tool.Stratum.get_optional_column_names()
+        pset_dict = cls.create_pset_dict(row, required_column_names + optional_column_names)
         cls.add_attributes(stratum, pset_dict)
         return stratum
 

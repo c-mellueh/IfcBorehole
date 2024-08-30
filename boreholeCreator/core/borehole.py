@@ -15,7 +15,7 @@ def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum])
             ifc_borehole = borehole.create_unnested_boreholes(row)
         else:
             ifc_borehole = borehole.create_nested_borehole(row, stratums)
-        borehole_dataframe.at[index, prop.IFC_GUID] = ifc_borehole.GlobalId
+        borehole_dataframe.at[index, prop.IFC_GUID] = str(ifc_borehole.GlobalId)
         ifc_boreholes.append(ifc_borehole)
     return ifc_boreholes
 

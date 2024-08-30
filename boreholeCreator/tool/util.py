@@ -18,8 +18,9 @@ class Util:
         dataframe.insert(len(dataframe.columns), column_name, value)
 
     @classmethod
-    def add_missing_collumns(cls, df: pd.DataFrame, required_columns: list[str], optional_columns: dict[str, Any]):
-        for col_name, default in optional_columns.items():
+    def add_missing_collumns(cls, df: pd.DataFrame, required_columns: list[str],
+                             optional_columns: list[tuple[str, type, Any]]):
+        for col_name, datatype, default in optional_columns:
             if not col_name in df:
                 cls.add_column(df, col_name, default)
         for col_name in required_columns:
@@ -27,10 +28,10 @@ class Util:
                 cls.add_column(df, col_name)
 
     @classmethod
-    def is_dataframe_filled(cls, df, required_columns: list[str], optional_columns: dict[str, Any]):
+    def is_dataframe_filled(cls, df, required_columns: list[str], optional_columns: list[tuple[str, type, Any]]):
         df_header = list(df)
         is_ok = True
-        for col_name, default in optional_columns.items():
+        for col_name, data_type, default in optional_columns:
             if col_name not in df_header:
                 cls.add_column(df, col_name, default)
         for col_name in required_columns:

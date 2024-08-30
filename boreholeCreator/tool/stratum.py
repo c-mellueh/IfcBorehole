@@ -16,6 +16,8 @@ class Stratum(boreholeCreator.core.tool.Stratum):
 
     @classmethod
     def get_dataframe(cls) -> pd.DataFrame:
+        if cls.get_properties().stratum_dataframe is None:
+            cls.reset_dataframe()
         return cls.get_properties().stratum_dataframe
 
     @classmethod
@@ -53,21 +55,37 @@ class Stratum(boreholeCreator.core.tool.Stratum):
         return prop.STRATUM_REQUIRED
 
     @classmethod
-    def get_required_columns_datatype(cls):
-        return prop.STRATUM_REQUIRED_DATATYPE
+    def get_required_column_names(cls):
+        return [x[0] for x in cls.get_required_columns()]
 
     @classmethod
-    def get_optional_collumns(cls):
+    def get_required_column_datatypes(cls):
+        return [x[1] for x in cls.get_required_columns()]
+
+    @classmethod
+    def get_optional_collumns(cls) -> list[tuple[str, type, Any]]:
         return prop.STRATUM_OPTIONAL
+
+    @classmethod
+    def get_optional_column_names(cls):
+        return [x[0] for x in cls.get_optional_collumns()]
+
+    @classmethod
+    def get_optional_column_datatypes(cls):
+        return [x[1] for x in cls.get_optional_collumns()]
+
+    @classmethod
+    def get_optional_column_defaults(cls):
+        return [x[2] for x in cls.get_optional_collumns()]
 
     @classmethod
     def is_dataframe_filled(cls):
         df = cls.get_dataframe()
         df_header = list(df)
-        for col_name, default in prop.STRATUM_OPTIONAL.items():
+        for col_name, datatype, default in cls.get_optional_collumns():
             if col_name not in df_header:
                 tool.Util.add_column(df, col_name, default)
-        for col_name in cls.get_required_columns():
+        for col_name in cls.get_required_column_names():
             if col_name not in df_header:
                 logging.error(f"Column '{col_name}' not found in Stratum dataframe")
                 return False
@@ -75,11 +93,15 @@ class Stratum(boreholeCreator.core.tool.Stratum):
 
     @classmethod
     def reset_dataframe(cls):
-        df = pd.DataFrame({k: [] for k in prop.STRATUM_REQUIRED + list(prop.STRATUM_OPTIONAL.keys())})
+        required = cls.get_required_columns()
+        optional = cls.get_optional_collumns()
+        df = pd.DataFrame({
+            k: pd.Series(dtype=dt) for k, dt in required + [x[:2] for x in optional]
+        })
         cls.get_properties().stratum_dataframe = df
 
     @classmethod
     def set_correct_datatypes(cls, dataframe: pd.DataFrame):
-        for name, datatype in zip(cls.get_required_columns(), cls.get_required_columns_datatype()):
+        for name, datatype in zip(cls.get_required_column_names(), cls.get_required_column_datatypes()):
             dataframe[name] = dataframe[name].astype(datatype)
         return dataframe
