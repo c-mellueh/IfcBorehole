@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from boreholeGUI import tool
+
 if TYPE_CHECKING:
     from boreholeGUI.module.data_frame_table.prop import DataFrameTableProperties
 from PySide6.QtWidgets import QStyle, QMenu
@@ -56,7 +58,7 @@ class DataFrameTable:
 
 
     @classmethod
-    def get_tool_from_widget(cls, widget: ui.Widget):
+    def get_tool_from_widget(cls, widget: ui.Widget) -> tool.Borehole | tool.Stratum:
         return cls.get_properties().tool_dict.get(widget)
 
     @classmethod
@@ -172,3 +174,8 @@ class DataFrameTable:
         from boreholeCreator.module.borehole.prop import X, Y, Z
         df[[X, Y, Z]] = df["geometry"].get_coordinates(include_z=True)
         return pd.DataFrame(df).drop("geometry", axis=1)
+
+    @classmethod
+    def get_tooltips(cls, widget: ui.Widget):
+        _tool = cls.get_tool_from_widget(widget)
+        return _tool.get_tooltips()

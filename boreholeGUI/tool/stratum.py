@@ -28,3 +28,7 @@ class Stratum(boreholeGUI.core.tool.Stratum):
     @classmethod
     def get_dataframe(cls):
         return cls.get_properties().dataframe
+
+    @classmethod
+    def get_tooltips(cls):
+        return cls.get_properties().tooltips

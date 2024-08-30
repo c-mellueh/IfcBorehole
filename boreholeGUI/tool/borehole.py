@@ -27,3 +27,7 @@ class Borehole(boreholeGUI.core.tool.Borehole):
     @classmethod
     def get_dataframe(cls):
         return cls.get_properties().dataframe
+
+    @classmethod
+    def get_tooltips(cls) -> dict[str, str]:
+        return cls.get_properties().tooltips
