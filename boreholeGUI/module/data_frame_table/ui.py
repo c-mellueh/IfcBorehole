@@ -53,17 +53,7 @@ class DataFrameModel(QAbstractTableModel):
     def setHeaderData(self, section, orientation, value, role=Qt.EditRole):
         if role == Qt.EditRole:
             if orientation == Qt.Horizontal:
-                self._dataframe.columns = (
-                        list(self._dataframe.columns[:section])
-                        + [value]
-                        + list(self._dataframe.columns[section + 1:])
-                )
-            elif orientation == Qt.Vertical:
-                self._dataframe.index = (
-                        list(self._dataframe.index[:section])
-                        + [value]
-                        + list(self._dataframe.index[section + 1:])
-                )
+                self._dataframe.rename(columns={list(self._dataframe)[section]: str(value)}, inplace=True)
             self.headerDataChanged.emit(orientation, section, section)
             return True
         return False
@@ -123,6 +113,8 @@ class DataFrameHeaderView(QHeaderView):
         # Close the editor
         editor.deleteLater()
 
+    def model(self) -> DataFrameModel:
+        return super().model()
 
 class Widget(QWidget):
     def __init__(self, *args, **kwargs):

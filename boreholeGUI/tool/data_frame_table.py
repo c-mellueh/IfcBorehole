@@ -118,8 +118,7 @@ class DataFrameTable:
     @classmethod
     def rename_column(cls, widget, index, t):
         df = cls.get_dataframe(widget)
-        df = df.rename(columns={list(df)[index]: t})
-        cls.set_dataframe(df, widget)
+        df.rename(columns={list(df)[index]: t}, inplace=True)
 
     @classmethod
     def add_column(cls, index, widget: ui.Widget, column_name=None, prefill=None):
