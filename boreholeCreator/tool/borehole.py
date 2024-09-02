@@ -63,13 +63,16 @@ class Borehole(boreholeCreator.core.tool.Borehole):
         return [x[0] for x in cls.get_required_columns()]
 
     @classmethod
-    def get_required_columns_datatype(cls) -> list[type]:
+    def get_required_column_datatypes(cls) -> list[type]:
         return [x[1] for x in cls.get_required_columns()]
 
     @classmethod
     def set_correct_datatypes(cls, dataframe: pd.DataFrame) -> pd.DataFrame:
-        for name, datatype in zip(cls.get_required_column_names(), cls.get_required_columns_datatype()):
-            dataframe[name] = dataframe[name].astype(datatype)
+        col_names = cls.get_optional_column_names() + cls.get_required_column_names()
+        col_datatypes = cls.get_optional_column_datatypes() + cls.get_required_column_datatypes()
+        for name, datatype in zip(col_names, col_datatypes):
+            if name in list(dataframe):
+                dataframe[name] = dataframe[name].astype(datatype)
         return dataframe
 
     @classmethod

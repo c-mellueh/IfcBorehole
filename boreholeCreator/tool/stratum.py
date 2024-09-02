@@ -102,6 +102,9 @@ class Stratum(boreholeCreator.core.tool.Stratum):
 
     @classmethod
     def set_correct_datatypes(cls, dataframe: pd.DataFrame):
-        for name, datatype in zip(cls.get_required_column_names(), cls.get_required_column_datatypes()):
-            dataframe[name] = dataframe[name].astype(datatype)
+        col_names = cls.get_optional_column_names() + cls.get_required_column_names()
+        col_datatypes = cls.get_optional_column_datatypes() + cls.get_required_column_datatypes()
+        for name, datatype in zip(col_names, col_datatypes):
+            if name in list(dataframe):
+                dataframe[name] = dataframe[name].astype(datatype)
         return dataframe
