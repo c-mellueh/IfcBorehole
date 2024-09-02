@@ -14,6 +14,10 @@ def warning_clicked(widget):
     core.warning_button_clicked(widget, tool.DataFrameTable, tool.Popups)
 
 
+def info_clicked(widget):
+    core.info_button_clicked(widget, tool.DataFrameTable, tool.Popups)
+
+
 def paint_table(widget):
     core.paint_table(widget, tool.DataFrameTable)
 

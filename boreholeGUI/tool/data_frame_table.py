@@ -29,6 +29,12 @@ class DataFrameTable:
 
         widget.ui.pushButton.clicked.connect(lambda: trigger.button_clicked(widget))
         warning_button.clicked.connect(lambda: trigger.warning_clicked(widget))
+
+        info_button = cls.get_info_button(widget)
+        info_button.setIcon(widget.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation))
+        info_button.setText("Info!")
+        info_button.clicked.connect(lambda: trigger.info_clicked(widget))
+
         return widget
 
     @classmethod
@@ -74,12 +80,29 @@ class DataFrameTable:
         cls.get_warning_button(widget).setToolTip(warning)
 
     @classmethod
+    def set_info(cls, info: str | None, widget: ui.Widget):
+        button = cls.get_info_button(widget)
+        if not info:
+            button.hide()
+        else:
+            button.show()
+        button.setToolTip(info)
+
+    @classmethod
     def get_warning_button(cls, widget: ui.Widget):
-        return widget.ui.pushButton_2
+        return widget.ui.button_warn
+
+    @classmethod
+    def get_info_button(cls, widget: ui.Widget):
+        return widget.ui.button_info
 
     @classmethod
     def get_warning(cls, widget: ui.Widget):
         return cls.get_warning_button(widget).toolTip()
+
+    @classmethod
+    def get_info(cls, widget: ui.Widget):
+        return cls.get_info_button(widget).toolTip()
 
     @classmethod
     def get_column_names(cls, widget: ui.Widget):
@@ -106,6 +129,7 @@ class DataFrameTable:
         remove_column.triggered.connect(lambda: cls.remove_column(logical_index, widget))
 
         missing_titles = cls.get_missing_required_columns(widget)
+        missing_titles += cls.get_missing_optional_columns(widget)
         if not missing_titles:
             return menu
 
@@ -161,7 +185,7 @@ class DataFrameTable:
         widget_tool = cls.get_tool_from_widget(widget)
         widget_tool_cli = widget_tool.get_cli()
         existing_column_names = set(cls.get_column_names(widget))
-        required_column_names = set(widget_tool_cli.get_optional_collumns())
+        required_column_names = set(widget_tool_cli.get_optional_column_names())
         missing_column_names = sorted(required_column_names.difference(existing_column_names))
         return missing_column_names
 

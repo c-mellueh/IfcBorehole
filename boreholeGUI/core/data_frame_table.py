@@ -41,13 +41,23 @@ def button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable
 
 
 def paint_table(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable]):
-    missing_column_names = data_frame_table.get_missing_required_columns(widget)
-    if missing_column_names:
-        missing_column_names = '\n'.join(missing_column_names)
-        data_frame_table.set_warning(f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_column_names}",
+    missing_required_column_names = data_frame_table.get_missing_required_columns(widget)
+    if missing_required_column_names:
+        missing_required_column_names = '\n'.join([f"'{x}'" for x in missing_required_column_names])
+        data_frame_table.set_warning(
+            f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_required_column_names}",
                                      widget)
     else:
         data_frame_table.set_warning(None, widget)
+
+    missing_optional_column_names = data_frame_table.get_missing_optional_columns(widget)
+    if missing_optional_column_names:
+        missing_optional_column_names = '\n'.join([f"'{x}'" for x in missing_optional_column_names])
+        data_frame_table.set_info(
+            f"Folgende Spalten können ergänzt/umbenannt werden: \n{missing_optional_column_names}",
+            widget)
+    else:
+        data_frame_table.set_info(None, widget)
 
 
 def warning_button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable], popups: Type[tool.Popups]):
@@ -55,6 +65,14 @@ def warning_button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFr
     if not warning:
         return
     pop = popups.create_info_popup(warning, "Achtung!", False)
+    pop.exec()
+
+
+def info_button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable], popups: Type[tool.Popups]):
+    info = data_frame_table.get_info(widget)
+    if not info:
+        return
+    pop = popups.create_info_popup(info, "Info!", False)
     pop.exec()
 
 
