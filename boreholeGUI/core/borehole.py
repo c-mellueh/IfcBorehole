@@ -10,9 +10,8 @@ if TYPE_CHECKING:
 from boreholeGUI import tool
 
 
-def add_widget_to_mainwindow(main_window: Type[tool.MainWindow], borehole: Type[tool.Borehole],
-                             data_frame_table: Type[tool.DataFrameTable]):
-    widget = data_frame_table.create_widget(borehole)
+def add_widget_to_mainwindow(main_window: Type[tool.MainWindow], borehole: Type[tool.Borehole]):
+    widget = borehole.create_widget()
     borehole.set_widget(widget)
     main_window.add_step("Borehole", borehole.get_widget())
-    data_frame_table.set_dataframe(cli_tool.Borehole.get_dataframe(), widget)
+    borehole.set_dataframe(cli_tool.Borehole.get_dataframe())

@@ -10,9 +10,10 @@ from .select_dialog import Ui_Dialog
 
 
 class DataFrameModel(QAbstractTableModel):
-    def __init__(self, df=pd.DataFrame(), parent=None):
+    def __init__(self, df=pd.DataFrame(), tool=None, parent=None):
         super().__init__(parent)
         self._dataframe = df
+        self.tool = tool
 
     def rowCount(self, parent=None):
         return self._dataframe.shape[0]
@@ -44,7 +45,7 @@ class DataFrameModel(QAbstractTableModel):
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
-        tooltips = trigger.request_tooltips()
+        tooltips = trigger.request_tooltips(self.tool)
         if role == Qt.DisplayRole or role == Qt.EditRole:
             if orientation == Qt.Horizontal:
                 return str(self._dataframe.columns[section])
@@ -94,10 +95,8 @@ class DataFrameHeaderView(QHeaderView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
     def editSection(self, logicalIndex):
-        widget = self.parentWidget().parentWidget()
-        from boreholeGUI import tool
-        missing_columns = tool.DataFrameTable.get_missing_required_columns(widget)
-        missing_columns += tool.DataFrameTable.get_missing_optional_columns(widget)
+        missing_columns = self.model().tool.get_missing_required_columns()
+        missing_columns += self.model().tool.get_missing_optional_columns()
         # Create an editor
         editor = QLineEdit(self)
         editor.setCompleter(QCompleter(missing_columns))
@@ -132,13 +131,14 @@ class Widget(QWidget):
 
 
 class TableView(QTableView):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, ):
         super().__init__(parent)
+        self._tool = None
 
     def paintEvent(self, e):
         super().paintEvent(e)
         from . import trigger
-        trigger.paint_table(self.parentWidget())
+        trigger.paint_table(self._tool)
 
     def model(self) -> DataFrameModel:
         return super().model()
@@ -149,3 +149,4 @@ class SelectDialog(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowIcon(get_icon())
+        self.setWindowTitle("Select DataFrame")

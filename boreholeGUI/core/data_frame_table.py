@@ -18,7 +18,7 @@ FILE_TYPES = [
 ]
 
 
-def button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable], popups: Type[tool.Popups]):
+def button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]):
     dialog = data_frame_table.create_select_dialog()
     if not dialog.exec():
         return
@@ -37,48 +37,46 @@ def button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable
     else:
         popups.create_warning_popup(f"Fileformat '{path.split('.')[-1]}' not supported'")
         return
-    data_frame_table.set_dataframe(df, widget)
+    data_frame_table.set_dataframe(df)
 
 
-def paint_table(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable]):
-    missing_required_column_names = data_frame_table.get_missing_required_columns(widget)
+def paint_table(data_frame_table: Type[tool.Borehole | tool.Stratum]):
+    missing_required_column_names = data_frame_table.get_missing_required_columns()
     if missing_required_column_names:
         missing_required_column_names = '\n'.join([f"'{x}'" for x in missing_required_column_names])
         data_frame_table.set_warning(
-            f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_required_column_names}",
-                                     widget)
+            f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_required_column_names}")
     else:
-        data_frame_table.set_warning(None, widget)
+        data_frame_table.set_warning(None)
 
-    missing_optional_column_names = data_frame_table.get_missing_optional_columns(widget)
+    missing_optional_column_names = data_frame_table.get_missing_optional_columns()
     if missing_optional_column_names:
         missing_optional_column_names = '\n'.join([f"'{x}'" for x in missing_optional_column_names])
         data_frame_table.set_info(
-            f"Folgende Spalten können ergänzt/umbenannt werden: \n{missing_optional_column_names}",
-            widget)
+            f"Folgende Spalten können ergänzt/umbenannt werden: \n{missing_optional_column_names}")
     else:
-        data_frame_table.set_info(None, widget)
+        data_frame_table.set_info(None)
 
 
-def warning_button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable], popups: Type[tool.Popups]):
-    warning = data_frame_table.get_warning(widget)
+def warning_button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]):
+    warning = data_frame_table.get_warning()
     if not warning:
         return
     pop = popups.create_info_popup(warning, "Achtung!", False)
     pop.exec()
 
 
-def info_button_clicked(widget: ui.Widget, data_frame_table: Type[tool.DataFrameTable], popups: Type[tool.Popups]):
-    info = data_frame_table.get_info(widget)
+def info_button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]):
+    info = data_frame_table.get_info()
     if not info:
         return
     pop = popups.create_info_popup(info, "Info!", False)
     pop.exec()
 
 
-def header_context_menu_requested(widget: ui.Widget, pos: QPoint, data_frame_table: Type[tool.DataFrameTable]):
-    header = data_frame_table.get_table_view(widget).horizontalHeader()
-    menu = data_frame_table.create_header_context_menu(pos, widget)
+def header_context_menu_requested(pos: QPoint, data_frame_table: Type[tool.Borehole | tool.Stratum]):
+    header = data_frame_table.get_table_view().horizontalHeader()
+    menu = data_frame_table.create_header_context_menu(pos)
     menu.exec(header.mapToGlobal(pos))
 
 
@@ -97,5 +95,5 @@ def dataframe_select_file_clicked(dialog: ui.SelectDialog, popups: Type[tool.Pop
         dialog.ui.comboBox.hide()
 
 
-def request_tooltips(stratum: Type[tool.Stratum]):
-    return stratum.get_tooltips()  # TODO: Improve Tooltip handling
+def request_tooltips(data_frame_table: Type[tool.Borehole | tool.Stratum]):
+    return data_frame_table.get_tooltips()  # TODO: Improve Tooltip handling
