@@ -28,7 +28,7 @@ class Location(boreholeCreator.core.tool.Location):
         return boreholeCreator.LocationProperties
 
     @classmethod
-    def create_ifcaxis2placement(cls,ifcfile, point=O, dir1=Z, dir2=X):
+    def create_ifcaxis2placement3D(cls, ifcfile, point=O, dir1=Z, dir2=X):
         point = ifcfile.createIfcCartesianPoint(point)
         dir1 = ifcfile.createIfcDirection(dir1)
         dir2 = ifcfile.createIfcDirection(dir2)
@@ -37,7 +37,7 @@ class Location(boreholeCreator.core.tool.Location):
 
     @classmethod
     def create_ifclocalplacement(cls,ifcfile, point=O, dir1=Z, dir2=X, relative_to=None):
-        axis2placement = cls.create_ifcaxis2placement(ifcfile, point, dir1, dir2)
+        axis2placement = cls.create_ifcaxis2placement3D(ifcfile, point, dir1, dir2)
         ifclocalplacement2 = ifcfile.createIfcLocalPlacement(relative_to, axis2placement)
         return ifclocalplacement2
 
