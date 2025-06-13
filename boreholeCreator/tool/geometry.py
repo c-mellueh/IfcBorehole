@@ -87,7 +87,7 @@ class Geometry(boreholeCreator.core.tool.Geometry):
         radius = cls.get_radius()
 
         if use_primitive:
-            cls.create_cylinder_shape(f"Circle_{name}", radius, depth)
+            return cls.create_cylinder_shape(f"Circle_{name}", radius, depth)
         else:
             # Create Cylinder by extruding Circle
             ifcfile = cls.get_file()

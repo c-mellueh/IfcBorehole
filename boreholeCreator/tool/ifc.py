@@ -95,8 +95,8 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         #7=IFCDIRECTION((0.,0.,1.));
         #8=IFCCARTESIANPOINT((0.,0.,0.));
         #9=IFCAXIS2PLACEMENT3D(#8,#7,#6);
-        #10=IFCDIRECTION((0.,1.,0.));
-        #11=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.E-05,#9,$);
+        #10=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.E-05,#9,$);
+        #11=IFCGEOMETRICREPRESENTATIONSUBCONTEXT('Body','Model',*,*,*,*,#10,$,.MODEL_VIEW.,$);
         #12=IFCDIMENSIONALEXPONENTS(0,0,0,0,0,0,0);
         #13=IFCSIUNIT(*,.LENGTHUNIT.,$,.METRE.);
         #14=IFCSIUNIT(*,.AREAUNIT.,$,.SQUARE_METRE.);
@@ -105,7 +105,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         #17=IFCMEASUREWITHUNIT(IFCPLANEANGLEMEASURE(1.74532925199433E-2), #16);
         #18=IFCCONVERSIONBASEDUNIT(#12,.PLANEANGLEUNIT.,'DEGREE',#17);
         #19=IFCUNITASSIGNMENT((#13,#14,#15,#18));
-        #20=IFCPROJECT('{prop.project_gobal_id}',#5,'{prop.project_name}',$,$,$,$,(#11),#19);
+        #20=IFCPROJECT('{prop.project_gobal_id}',#5,'{prop.project_name}',$,$,$,$,(#10),#19);
         ENDSEC;
         END-ISO-10303-21;
         """
@@ -148,7 +148,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def get_geometric_representation_context(cls):
-        return cls._get_ifc_entity("IfcGeometricRepresentationContext","geometric_representation_context")
+        return cls._get_ifc_entity("IFCGEOMETRICREPRESENTATIONSUBCONTEXT","geometric_representation_context")
 
     @classmethod
     def create_pset_dict(cls, row: pd.Series, ignored_collumns) -> dict[str, dict[str, Any]]:
@@ -178,8 +178,8 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         for pset_name, attribute_dict in data.items():
             pset = ifcopenshell.api.run("pset.add_pset", ifcfile, product=entity, name=pset_name)
             relation = pset.DefinesOccurrence[0]
-            relation.OwnerHistory = owner_history
-            pset.OwnerHistory = owner_history
+            # relation.OwnerHistory = owner_history
+            # pset.OwnerHistory = owner_history
             ifcopenshell.api.run("pset.edit_pset", ifcfile, pset=pset, properties=attribute_dict)
 
     @classmethod
@@ -218,7 +218,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
                                         ObjectPlacement=placement,
                                         Representation=shape,
                                         Tag=row[prop.ID], )
-        stratum.OwnerHistory = owner_history
+        #stratum.OwnerHistory = owner_history
         required_column_names = tool.Stratum.get_required_column_names()
         optional_column_names = tool.Stratum.get_optional_column_names()
         pset_dict = cls.create_pset_dict(row, required_column_names + optional_column_names)
@@ -234,8 +234,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     def assign_entities_to_site(cls, entities: list[ifcopenshell.entity_instance]):
         ifcfile = cls.get_ifcfile()
         site = cls.get_site()
-        container = ifcfile.create_entity("IFCRELCONTAINEDINSPATIALSTRUCTURE")
-        container.OwnerHistory = cls.get_owner_history()
+        container = ifcfile.create_entity("IFCRELCONTAINEDINSPATIALSTRUCTURE",GlobalId=cls.create_guid(),OwnerHistory=cls.get_owner_history())
         container.RelatedElements = entities
         container.RelatingStructure = site
         # ifcopenshell.api.run("spatial.assign_container", ifcfile, products=entities, relating_structure=site)

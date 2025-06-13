@@ -45,5 +45,6 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
     logging.info("Write Ifc-File")
     if output_path:
         file.write(output_path)
+        print("DONE")
     logging.info("Done!")
     return file

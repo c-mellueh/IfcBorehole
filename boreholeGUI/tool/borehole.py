@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from . import DataFrameTable
+from .data_frame_table import DataFrameTable
 
 if TYPE_CHECKING:
     from boreholeGUI.module.borehole.prop import BoreholeProperties

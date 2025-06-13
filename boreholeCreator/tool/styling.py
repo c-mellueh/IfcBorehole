@@ -48,5 +48,12 @@ class Styling(boreholeCreator.core.tool.Styling):
         style = cls.create_style(r, g, b, t)
         ifcfile = tool.Ifc.get_ifcfile()
         for ifc_guid in dataframe[IFC_GUID]:
+
+            entity = ifcfile.by_guid(ifc_guid)
+            if entity is None:
+                raise ValueError(f"Entity with GUID {ifc_guid} not found in IFC file.")
+            representation = entity.Representation
+            if representation is None:
+                raise ValueError(f"Representation for entity with GUID {ifc_guid} not found in IFC file.")
             ifcopenshell.api.run("style.assign_representation_styles", ifcfile,
                                  shape_representation=ifcfile.by_guid(ifc_guid).Representation, styles=[style])
