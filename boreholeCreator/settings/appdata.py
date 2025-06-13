@@ -33,7 +33,6 @@ class AppdataSetting:
 
     def __set__(self, instance, value: str):
         from boreholeCreator.settings.appdata import Appdata as appdata
-
         appdata.set_setting(self.section, self.option, value)
 
 

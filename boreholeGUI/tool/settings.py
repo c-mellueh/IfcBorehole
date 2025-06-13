@@ -10,8 +10,10 @@ if TYPE_CHECKING:
     from boreholeGUI.module.settings.prop import SettingsProperties
 import boreholeGUI.core.tool
 from boreholeGUI.module.settings import ui
-
+from boreholeCreator.settings.appdata import AppdataSetting
+PATH_SETTINGS = "paths"
 class Settings(boreholeGUI.core.tool.Settings):
+    ifc_export_path = AppdataSetting(PATH_SETTINGS,"ifc_export_path", str, "~/export.ifc")
     @classmethod
     def get_properties(cls) -> SettingsProperties:
         return boreholeGUI.SettingsProperties
@@ -46,3 +48,38 @@ class Settings(boreholeGUI.core.tool.Settings):
                 tool.Popups.create_warning_popup(text)
                 is_value = False
         return is_value
+
+    @classmethod
+    def add_ui_trigger(cls, widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,setter:Callable):
+        def none_handler(v):
+            return None if v == "None" else v
+        if isinstance(widget, QLineEdit):
+            widget.textEdited.connect(lambda v, s=setter: s(none_handler(v)))
+
+        elif isinstance(widget, QComboBox):
+            widget.currentTextChanged.connect(setter)
+
+        elif isinstance(widget, QDoubleSpinBox):
+            widget.valueChanged.connect(setter)
+
+        elif isinstance(widget, QCheckBox):
+            widget.checkStateChanged.connect(
+                lambda checked, w=widget: setter(w.isChecked())
+            )
+    @classmethod
+    def add_paint_event(cls,widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,getter:Callable):
+        value = getter()
+        if isinstance(widget, QLineEdit) and widget.text() != value:
+            widget.setText(str(value))
+
+        elif isinstance(widget, QComboBox) and widget.currentText() != value:
+            widget.setCurrentText(value)
+
+        elif isinstance(widget, QDoubleSpinBox) and widget.value() != value:
+            widget.setValue(value)
+
+        elif isinstance(widget, QCheckBox) and widget.isChecked() != value:
+            print(widget, value, getter)
+            widget.setChecked(value)
+
+        widget.setToolTip(str(type(value)))

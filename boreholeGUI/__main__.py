@@ -13,7 +13,7 @@ def main(log_level=None):
     boreholeGUI.register()
     app = QApplication(sys.argv)
     boreholeGUI.load_ui_triggers()
-    boreholeGUI.core.main_window.create_main_window(app, tool.MainWindow)
+    boreholeGUI.core.main_window.create_main_window(app, tool.MainWindow,tool.Settings)
     sys.exit(app.exec())
 
 if __name__ == '__main__':

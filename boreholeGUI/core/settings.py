@@ -20,67 +20,67 @@ def add_widget_to_mainwindow(
 def add_settings_getter_setter(
     settings: Type[tool.Settings],
     geometry: Type[cli_settings.Geometry],
-    ifc: Type[cli_settings.Ifc],
+    ifc: Type[tool.Ifc],
     location: Type[cli_settings.Location],
 ):
     ui = settings.get_widget().ui
-
+    ifc_settings = ifc.get_settings()
     # Geometry
     settings.add_setting(ui.sb_radius, geometry.get_radius, geometry.set_radius, float)
 
     # Application
     settings.add_setting(
         ui.le_application_name,
-        lambda: getattr(ifc,"application_name"),
-        lambda x: setattr(ifc,"application_name",x),
+        lambda: getattr(ifc_settings, "application_name"),
+        lambda x: setattr(ifc_settings, "application_name", x),
         str,
     )
     settings.add_setting(
         ui.le_application_version,
-        lambda: getattr(ifc,"application_version"),
-        lambda x: setattr(ifc,"application_version",x),
+        lambda: getattr(ifc_settings, "application_version"),
+        lambda x: setattr(ifc_settings, "application_version", x),
         str,
     )
 
     # Author
     settings.add_setting(
         ui.le_author_family_name,
-        lambda: getattr(ifc,"author_family_name"),
-        lambda x: setattr(ifc,"author_family_name",x),
+        lambda: getattr(ifc_settings, "author_family_name"),
+        lambda x: setattr(ifc_settings, "author_family_name", x),
         str,
     )
     settings.add_setting(
         ui.le_author_given_name,
-        lambda: getattr(ifc,"author_given_name"),
-        lambda x: setattr(ifc,"author_given_name",x),
+        lambda: getattr(ifc_settings, "author_given_name"),
+        lambda x: setattr(ifc_settings, "author_given_name", x),
         str,
     )
 
     # Organization
     settings.add_setting(
         ui.le_company_name,
-        lambda: getattr(ifc,"organization_name"),
-        lambda x: setattr(ifc,"organization_name",x),
+        lambda: getattr(ifc_settings, "organization_name"),
+        lambda x: setattr(ifc_settings, "organization_name", x),
         str,
     )
     settings.add_setting(
         ui.le_company_description,
-        lambda: getattr(ifc,"organization_description"),
-        lambda x: setattr(ifc,"organization_description",x),
+        lambda: getattr(ifc_settings, "organization_description"),
+        lambda x: setattr(ifc_settings, "organization_description", x),
         str,
     )
 
     # Misc.
     settings.add_setting(
         ui.cb_file_schema,
-        lambda: getattr(ifc,"file_schema"),
-        lambda x: setattr(ifc,"file_schema",x),
+        lambda: getattr(ifc_settings, "file_schema"),
+        lambda x: setattr(ifc_settings, "file_schema", x),
         str,
     )
     settings.add_setting(
         ui.le_default_pset_name,
-        lambda: getattr(ifc,"pset_base_name"),
-        lambda x: setattr(ifc,"pset_base_name",x),
+        lambda: getattr(ifc_settings, "pset_base_name"),
+        lambda x: setattr(ifc_settings, "pset_base_name", x),
         str,
     )
 
@@ -136,39 +136,10 @@ def activate_mapconversion_toggled(settings: Type[tool.Settings]):
 
 
 def create_ui_triggers(settings: Type[tool.Settings]):
-    def none_handler(v):
-        return None if v == "None" else v
-
     for widget, getter, setter, _ in settings.get_settings_list():
-        if isinstance(widget, QLineEdit):
-            widget.textEdited.connect(lambda v, s=setter: s(none_handler(v)))
-
-        elif isinstance(widget, QComboBox):
-            widget.currentTextChanged.connect(setter)
-
-        elif isinstance(widget, QDoubleSpinBox):
-            widget.valueChanged.connect(setter)
-
-        elif isinstance(widget, QCheckBox):
-            widget.checkStateChanged.connect(
-                lambda checked, w=widget: setter(w.isChecked())
-            )
+        settings.add_ui_trigger(widget, setter)
 
 
 def paint_event(settings: Type[tool.Settings]):
     for widget, getter, setter, _ in settings.get_settings_list():
-        value = getter()
-        if isinstance(widget, QLineEdit) and widget.text() != value:
-            widget.setText(str(value))
-
-        elif isinstance(widget, QComboBox) and widget.currentText() != value:
-            widget.setCurrentText(value)
-
-        elif isinstance(widget, QDoubleSpinBox) and widget.value() != value:
-            widget.setValue(value)
-
-        elif isinstance(widget, QCheckBox) and widget.isChecked() != value:
-            print(widget, value, getter)
-            widget.setChecked(value)
-
-        widget.setToolTip(str(type(value)))
+        settings.add_paint_event(widget, getter)
