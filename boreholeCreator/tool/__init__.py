@@ -1,3 +1,4 @@
+from ..settings.appdata import Appdata
 from .borehole import Borehole
 from .geometry import Geometry
 from .ifc import Ifc

@@ -6,3 +6,4 @@ numpy
 geopandas
 pyqtconsole
 fiona
+appdirs

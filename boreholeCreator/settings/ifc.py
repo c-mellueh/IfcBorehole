@@ -3,9 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import boreholeCreator
+from boreholeCreator.settings.appdata import Appdata as appdata
 
 if TYPE_CHECKING:
     from boreholeCreator.module.ifc.prop import IfcProperties
+
+IFC = "ifc"
+APPICATION_NAME = "application_name"
+APPICATION_VERSION = "application_version"
+AUTHOR_FAMILY_NAME = "author_family_name"
+AUTHOR_GIVEN_NAME = "author_given_name"
 
 
 class Ifc:
@@ -15,19 +22,19 @@ class Ifc:
 
     @classmethod
     def set_application_name(cls, name: str):
-        cls.get_properties().application_name = name
+        appdata.set_setting(APPICATION_NAME, IFC, name)
 
     @classmethod
     def get_application_name(cls):
-        return cls.get_properties().application_name
+        return appdata.get_string_setting(APPICATION_NAME, IFC, "IfcBorehole")
 
     @classmethod
     def set_application_version(cls, version: str):
-        cls.get_properties().application_version = version
+        appdata.set_setting(APPICATION_VERSION, IFC, version)
 
     @classmethod
     def get_application_version(cls):
-        return cls.get_properties().application_version
+        appdata.get_string_setting(APPICATION_VERSION, IFC, boreholeCreator.__version__)
 
     @classmethod
     def set_author_attribute(cls, name, value):
