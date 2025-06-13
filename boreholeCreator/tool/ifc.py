@@ -18,6 +18,8 @@ from boreholeCreator import tool
 if TYPE_CHECKING:
     from boreholeCreator.module.ifc.prop import IfcProperties
 
+from boreholeCreator.settings.ifc import AUTHOR,ORGANIZATION
+from boreholeCreator.settings.appdata import Appdata as appdata_tool
 
 class Ifc(boreholeCreator.core.tool.Ifc):
     @classmethod
@@ -57,8 +59,9 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def fill_person_and_org(cls):
-        creator_dict = cls.get_properties().creator
-        organization_dict = cls.get_properties().organization
+        creator_dict = appdata_tool.section_to_dict(AUTHOR)
+        organization_dict =appdata_tool.section_to_dict(ORGANIZATION)
+
         tool.Util.fill_entity_with_dict(cls.get_person(), creator_dict)
         tool.Util.fill_entity_with_dict(cls.get_organization(), organization_dict)
 
@@ -72,24 +75,24 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def create_template(cls):
-        prop = cls.get_properties()
-        filename = prop.file_name
-        creator_name = prop.creator.get("Name")
-        organization_name = prop.organization.get("Name")
+
+        from boreholeCreator.settings.ifc import Ifc as IfcSettings
+        filename = IfcSettings.file_name
+        creator_name = IfcSettings.author_family_name
+        organization_name = IfcSettings.organization_name
         timestamp = int(time.time())
         timestring = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(timestamp))
-        center = tool.Location.get_properties().site_position
         template = f"""ISO-10303-21;
         HEADER;
         FILE_DESCRIPTION(('ViewDefinition[CoordinationView]'),'2;1');
-        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{prop.application_name}','{prop.application_name}','');
-        FILE_SCHEMA(('{prop.file_schema}'));
+        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{IfcSettings.application_name}','{IfcSettings.application_name}','');
+        FILE_SCHEMA(('{IfcSettings.file_schema}'));
         ENDSEC;
         DATA;
-        #1=IFCPERSON($,$,'{creator_name}',$,$,$,$,$);
+        #1=IFCPERSON($,$,$,$,$,$,$,$);
         #2=IFCORGANIZATION($,'{organization_name}',$,$,$);
         #3=IFCPERSONANDORGANIZATION(#1,#2,$);
-        #4=IFCAPPLICATION(#2,'{prop.application_version}','{prop.application_name}','');
+        #4=IFCAPPLICATION(#2,'{IfcSettings.application_version}','{IfcSettings.application_name}','');
         #5=IFCOWNERHISTORY(#3,#4,$,.ADDED.,{timestamp},#3,#4,{timestamp});
         #6=IFCDIRECTION((1.,0.,0.));
         #7=IFCDIRECTION((0.,0.,1.));
@@ -105,7 +108,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         #17=IFCMEASUREWITHUNIT(IFCPLANEANGLEMEASURE(1.74532925199433E-2), #16);
         #18=IFCCONVERSIONBASEDUNIT(#12,.PLANEANGLEUNIT.,'DEGREE',#17);
         #19=IFCUNITASSIGNMENT((#13,#14,#15,#18));
-        #20=IFCPROJECT('{prop.project_gobal_id}',#5,'{prop.project_name}',$,$,$,$,(#10),#19);
+        #20=IFCPROJECT('{IfcSettings.project_gobal_id}',#5,'{IfcSettings.project_name}',$,$,$,$,(#10),#19);
         ENDSEC;
         END-ISO-10303-21;
         """
@@ -152,8 +155,9 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def create_pset_dict(cls, row: pd.Series, ignored_collumns) -> dict[str, dict[str, Any]]:
+        from boreholeCreator.settings.ifc import Ifc as IfcSettings
         pset_dict = dict()
-        pset_base_name = cls.get_properties().pset_base_name
+        pset_base_name = IfcSettings.pset_base_name
         for attribute_name, value in row.items():
             if attribute_name in ignored_collumns:
                 continue

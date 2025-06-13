@@ -6,40 +6,72 @@ from configparser import ConfigParser
 import appdirs
 
 
-
-OPTION_SEPERATOR =";"
+OPTION_SEPERATOR = ";"
 PATHS_SECTION = "paths"
-class CustomConfigParser(ConfigParser):
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
 
-    def getlist(self,section,option):
+
+class AppdataSetting:
+    def __init__(self, section, option, datatype, default: str = None):
+        self.section = section
+        self.option = option
+        self.default = default
+        self.datatype = datatype
+
+    def __get__(self, instance = None, owner=None):
+        from boreholeCreator.settings.appdata import Appdata as appdata
+
+        if self.datatype == bool:
+            return appdata.get_bool_setting(self.section, self.option, self.default)
+        elif self.datatype == int:
+            return appdata.get_int_setting(self.section, self.option, self.default)
+        elif self.datatype == float:
+            return appdata.get_float_setting(self.section, self.option, self.default)
+        elif self.datatype == list:
+            return appdata.get_list_setting(self.section, self.option, self.default)
+        elif self.datatype == str:
+            return appdata.get_string_setting(self.section, self.option, self.default)
+
+    def __set__(self, instance, value: str):
+        from boreholeCreator.settings.appdata import Appdata as appdata
+
+        appdata.set_setting(self.section, self.option, value)
+
+
+class CustomConfigParser(ConfigParser):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def getlist(self, section, option):
         value = self.get(section, option)
         return value.split(OPTION_SEPERATOR)
 
-    def setstring(self,section,option,value):
-        self.set(section,option)
+    def setstring(self, section, option, value):
+        self.set(section, option)
 
-    def get(self,section,option,*args,**kargs):
+    def get(self, section, option, *args, **kargs):
         if not self.has_section(section):
             return None
-        if not self.has_option(section,option):
+        if not self.has_option(section, option):
             return None
-        res = super().get(section,option,*args,**kargs)
-        if not isinstance(res,str):
+        res = super().get(section, option, *args, **kargs)
+        if not isinstance(res, str):
             return res
         if res.startswith("'") and res.endswith("'"):
             res = res.strip("'")
         return res
 
-    def set(self,section,option,value):
+    def optionxform(self, optionstr):
+        return optionstr
+
+    def set(self, section, option, value):
         if not self.has_section(section):
             self.add_section(section)
-        if type(value) in (list,set,tuple):
+        if type(value) in (list, set, tuple):
             value = OPTION_SEPERATOR.join([str(v) for v in value])
-        if isinstance(value,str):
+        if isinstance(value, str):
             value = f"'{value}'"
-        super().set(section,option,str(value))
+        super().set(section, option, str(value))
+
 
 class Appdata:
 
@@ -59,7 +91,9 @@ class Appdata:
             config_parser.write(f)
 
     @classmethod
-    def _get_config(cls, ) -> CustomConfigParser:
+    def _get_config(
+        cls,
+    ) -> CustomConfigParser:
         ConfigParser()
         config = CustomConfigParser()
         config_path = cls.get_ini_path()
@@ -71,17 +105,20 @@ class Appdata:
             return config
         config.read(config_path)
         return config
-    
+
     @classmethod
     def get_ini_path(cls):
         import boreholeCreator
-        return os.path.join(appdirs.user_config_dir(boreholeCreator.__name__), "config.ini")
+
+        return os.path.join(
+            appdirs.user_config_dir(boreholeCreator.__name__), "config.ini"
+        )
 
     @classmethod
     def get_path(cls, value: str) -> str | list | set:
         logging.info(f"Appdata Path '{value}' requested")
         config = cls._get_config()
-        path = config.get(PATHS_SECTION,value)
+        path = config.get(PATHS_SECTION, value)
         if not path:
             return ""
         if OPTION_SEPERATOR in path:
@@ -97,7 +134,7 @@ class Appdata:
     @classmethod
     def set_setting(cls, section: str, option: str, value):
         config_parser = cls._get_config()
-        config_parser.set(section,option,value)
+        config_parser.set(section, option, value)
         cls._write_config(config_parser)
 
     @classmethod
@@ -112,7 +149,7 @@ class Appdata:
     def get_string_setting(cls, section: str, option: str, default="") -> str:
         config_parser = cls._get_config()
         if config_parser.has_option(section, option):
-            value = config_parser.get(section,option)
+            value = config_parser.get(section, option)
             if value is not None:
                 return value
         cls.set_setting(section, option, default)
@@ -133,9 +170,9 @@ class Appdata:
             return config_parser.getfloat(section, option)
         cls.set_setting(section, option, default)
         return default
-    
+
     @classmethod
-    def get_list_setting(cls,section:str,option:str,default = []) -> list[str]:
+    def get_list_setting(cls, section: str, option: str, default=[]) -> list[str]:
         config_parser = cls._get_config()
         if config_parser.has_option(section, option):
             value = config_parser.getlist(section, option)
@@ -144,3 +181,10 @@ class Appdata:
                 return value
         cls.set_setting(section, option, default)
         return default
+
+    @classmethod
+    def section_to_dict(cls, section: str) -> dict[str, str]:
+        config_parser = cls._get_config()
+        if not config_parser.has_section(section):
+            return {}
+        return {option: config_parser.get(section, option) for option in config_parser.options(section)}

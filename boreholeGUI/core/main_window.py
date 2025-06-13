@@ -33,7 +33,7 @@ def run_clicked(main_window: Type[tool.MainWindow], borehole: Type[tool.Borehole
         return
     if not settings.settings_are_valid():
         return
-    cli_settings_ifc.set_file_name(os.path.basename(path))
+    cli_settings_ifc.file_name = os.path.basename(path)
 
     borehole_df = borehole.get_dataframe()
     borehole_df = borehole.get_cli().set_correct_datatypes(borehole_df)

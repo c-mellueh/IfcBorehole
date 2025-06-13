@@ -30,51 +30,57 @@ def add_settings_getter_setter(
 
     # Application
     settings.add_setting(
-        ui.le_application_name, ifc.get_application_name, ifc.set_application_name, str
+        ui.le_application_name,
+        lambda: getattr(ifc,"application_name"),
+        lambda x: setattr(ifc,"application_name",x),
+        str,
     )
     settings.add_setting(
         ui.le_application_version,
-        ifc.get_application_version,
-        ifc.set_application_version,
+        lambda: getattr(ifc,"application_version"),
+        lambda x: setattr(ifc,"application_version",x),
         str,
     )
 
     # Author
     settings.add_setting(
         ui.le_author_family_name,
-        lambda: ifc.get_author_attribute("FamilyName"),
-        lambda v: ifc.set_author_attribute("FamilyName", v),
+        lambda: getattr(ifc,"author_family_name"),
+        lambda x: setattr(ifc,"author_family_name",x),
         str,
     )
     settings.add_setting(
         ui.le_author_given_name,
-        lambda: ifc.get_author_attribute("GivenName"),
-        lambda v: ifc.set_author_attribute("GivenName", v),
+        lambda: getattr(ifc,"author_given_name"),
+        lambda x: setattr(ifc,"author_given_name",x),
         str,
     )
 
     # Organization
     settings.add_setting(
         ui.le_company_name,
-        lambda: ifc.get_organization_attribute("Name"),
-        lambda v: ifc.set_organization_attribute("Name", v),
+        lambda: getattr(ifc,"organization_name"),
+        lambda x: setattr(ifc,"organization_name",x),
         str,
     )
     settings.add_setting(
         ui.le_company_description,
-        lambda: ifc.get_organization_attribute("Description"),
-        lambda v: ifc.set_organization_attribute("Description", v),
+        lambda: getattr(ifc,"organization_description"),
+        lambda x: setattr(ifc,"organization_description",x),
         str,
     )
 
     # Misc.
     settings.add_setting(
-        ui.cb_file_schema, ifc.get_file_schema, ifc.set_file_schema, str
+        ui.cb_file_schema,
+        lambda: getattr(ifc,"file_schema"),
+        lambda x: setattr(ifc,"file_schema",x),
+        str,
     )
     settings.add_setting(
         ui.le_default_pset_name,
-        ifc.get_default_pset_name,
-        ifc.set_default_pset_name,
+        lambda: getattr(ifc,"pset_base_name"),
+        lambda x: setattr(ifc,"pset_base_name",x),
         str,
     )
 
