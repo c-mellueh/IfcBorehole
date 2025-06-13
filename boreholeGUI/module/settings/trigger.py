@@ -6,7 +6,7 @@ from boreholeGUI.core import settings as core
 
 def connect():
     core.add_widget_to_mainwindow(tool.MainWindow, tool.Settings)
-    core.add_settings_getter_setter(tool.Settings, cli_settings.Geometry, cli_tool.Ifc, cli_settings.Location)
+    core.add_settings_getter_setter(tool.Settings, cli_tool.Geometry, cli_tool.Ifc, cli_settings.Location)
     core.create_ui_triggers(tool.Settings)
 
 

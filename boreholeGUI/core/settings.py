@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit
 
 if TYPE_CHECKING:
     from boreholeGUI import tool
+    from boreholeCreator import tool as cli_tool
     from boreholeCreator import settings as cli_settings
 from boreholeGUI import tool
 
@@ -19,14 +20,20 @@ def add_widget_to_mainwindow(
 
 def add_settings_getter_setter(
     settings: Type[tool.Settings],
-    geometry: Type[cli_settings.Geometry],
-    ifc: Type[tool.Ifc],
+    geometry: Type[cli_tool.Geometry],
+    ifc: Type[cli_tool.Ifc],
     location: Type[cli_settings.Location],
 ):
     ui = settings.get_widget().ui
     ifc_settings = ifc.get_settings()
+    geometry_settings = geometry.get_settings()
     # Geometry
-    settings.add_setting(ui.sb_radius, geometry.get_radius, geometry.set_radius, float)
+    settings.add_setting(
+        ui.sb_radius,
+        lambda: getattr(geometry_settings, "radius"),
+        lambda x: setattr(geometry_settings, "radius", x),
+        float,
+    )
 
     # Application
     settings.add_setting(

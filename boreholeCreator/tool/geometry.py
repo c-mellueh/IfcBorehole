@@ -5,7 +5,7 @@ import ifcopenshell
 import boreholeCreator
 import boreholeCreator.core.tool
 from boreholeCreator import settings, tool
-from boreholeCreator.module.geometry.prop import GeometryProperties
+from boreholeCreator.module.geometry.prop import GeometryProperties,GeometrySettings
 
 O = 0., 0., 0.
 X = 1., 0., 0.
@@ -20,8 +20,8 @@ class Geometry(boreholeCreator.core.tool.Geometry):
         return boreholeCreator.GeometryProperties
 
     @classmethod
-    def get_settings(cls) -> Type[settings.Geometry]:
-        return settings.Geometry
+    def get_settings(cls) -> GeometrySettings:
+        return boreholeCreator.GeometrySettings
 
     @classmethod
     def get_file(cls) -> ifcopenshell.file:
@@ -30,10 +30,6 @@ class Geometry(boreholeCreator.core.tool.Geometry):
     @classmethod
     def get_context(cls) -> ifcopenshell.entity_instance:
         return tool.Ifc.get_geometric_representation_context()
-
-    @classmethod
-    def get_radius(cls) -> float:
-        return cls.get_properties().radius
 
     @classmethod
     def create_ifcextrudedareasolid(cls, ifcfile: ifcopenshell.file, surface, ifcaxis2placement, extrude_dir,
@@ -61,7 +57,7 @@ class Geometry(boreholeCreator.core.tool.Geometry):
 
     @classmethod
     def create_pyramid(cls, use_primitive: bool = True):
-        radius = cls.get_radius()
+        radius = cls.get_settings().radius
         c = 2 * radius * 1.7320508076
         if use_primitive:
             return cls.create_rectangular_pyramid_shape("Pyramid", -2., c, c)
@@ -84,7 +80,7 @@ class Geometry(boreholeCreator.core.tool.Geometry):
 
     @classmethod
     def create_cylinder(cls, name, depth: float, use_primitive: bool = True):
-        radius = cls.get_radius()
+        radius = cls.get_settings().radius
 
         if use_primitive:
             return cls.create_cylinder_shape(f"Circle_{name}", radius, depth)
@@ -96,7 +92,7 @@ class Geometry(boreholeCreator.core.tool.Geometry):
 
     @classmethod
     def create_cuboid(cls, name, depth: float, use_primitive: bool = True):
-        radius = cls.get_radius()
+        radius = cls.get_settings().radius
         c = 1.4142135624 * radius  # sqrt(2)*radius
         if use_primitive:
             return cls.create_cuboid_shape(f"Cuboid_{name}", depth, c, c)
@@ -108,7 +104,7 @@ class Geometry(boreholeCreator.core.tool.Geometry):
     @classmethod
     def create_prism(cls, name, depth: float, ):
         ifcfile = cls.get_file()
-        radius = cls.get_radius()
+        radius = cls.get_settings().radius
         triangle = cls.create_triangle(ifcfile, radius, f"Prism_{name}")
         return cls.create_extrusion_shape(triangle, name, depth)
 
