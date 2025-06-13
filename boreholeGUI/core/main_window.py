@@ -8,7 +8,9 @@ if TYPE_CHECKING:
     from boreholeCreator import tool as cli_tool
 
 
-def create_main_window(app, main_window: Type[tool.MainWindow],settings:Type[tool.Settings]):
+def create_main_window(
+    app, main_window: Type[tool.MainWindow], settings: Type[tool.Settings]
+):
     mw = main_window.create_main_window(app)
     main_window.clear_toolbox()
     for name, widget in main_window.get_steplist():
@@ -19,12 +21,19 @@ def create_main_window(app, main_window: Type[tool.MainWindow],settings:Type[too
     main_window.hide_terminal()
     settings.add_setting(
         main_window.get_ui().le_export_path,
-        lambda: getattr(settings,"ifc_export_path"),
-        lambda x: setattr(settings,"ifc_export_path",x),
+        lambda: getattr(settings, "ifc_export_path"),
+        lambda x: setattr(settings, "ifc_export_path", x),
         str,
     )
-    settings.add_ui_trigger(main_window.get_ui().le_export_path,lambda x: setattr(settings,"ifc_export_path",x))
-    settings.add_paint_event(main_window.get_ui().le_export_path,lambda: getattr(settings,"ifc_export_path"))
+    settings.add_ui_trigger(
+        main_window.get_ui().le_export_path,
+        lambda x: setattr(settings, "ifc_export_path", x),
+    )
+    settings.update_widget(
+        main_window.get_ui().le_export_path,
+        lambda: getattr(settings, "ifc_export_path"),
+    )
+
 
 def select_ifc_clicked(
     main_window: Type[tool.MainWindow],

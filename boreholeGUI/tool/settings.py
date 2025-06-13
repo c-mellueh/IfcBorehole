@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Any, Callable, TYPE_CHECKING
 
 from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit
+from PySide6.QtGui import QDoubleValidator
+from PySide6.QtCore   import QLocale
 
 from boreholeGUI import tool
 
@@ -10,10 +12,16 @@ if TYPE_CHECKING:
     from boreholeGUI.module.settings.prop import SettingsProperties
 import boreholeGUI.core.tool
 from boreholeGUI.module.settings import ui
-from boreholeCreator.settings.appdata import AppdataSetting
+from boreholeCreator.settings.appdata import AppdataSetting,Appdata
+
 PATH_SETTINGS = "paths"
+
+
 class Settings(boreholeGUI.core.tool.Settings):
-    ifc_export_path = AppdataSetting(PATH_SETTINGS,"ifc_export_path", str, "~/export.ifc")
+    ifc_export_path = AppdataSetting(
+        PATH_SETTINGS, "ifc_export_path", str, "~/export.ifc"
+    )
+
     @classmethod
     def get_properties(cls) -> SettingsProperties:
         return boreholeGUI.SettingsProperties
@@ -25,13 +33,23 @@ class Settings(boreholeGUI.core.tool.Settings):
         return cls.get_properties().widget
 
     @classmethod
-    def add_setting(cls, widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox, getter: Callable,
-                    setter: Callable, datatype):
+    def add_setting(
+        cls,
+        widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,
+        getter: Callable,
+        setter: Callable,
+        datatype,
+    ):
         cls.get_properties().settings_list.append((widget, getter, setter, datatype))
 
     @classmethod
-    def get_settings_list(cls) -> list[
-        tuple[QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox, Callable, Callable, Any]]:
+    def get_settings_list(
+        cls,
+    ) -> list[
+        tuple[
+            QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox, Callable, Callable, Any
+        ]
+    ]:
         return cls.get_properties().settings_list
 
     @classmethod
@@ -40,7 +58,7 @@ class Settings(boreholeGUI.core.tool.Settings):
         for widget, getter, setter, datatype in cls.get_settings_list():
             value = getter()
             try:
-                if value is None:
+                if value is None or value == "None":
                     continue
                 setter(datatype(value))
             except ValueError:
@@ -50,11 +68,16 @@ class Settings(boreholeGUI.core.tool.Settings):
         return is_value
 
     @classmethod
-    def add_ui_trigger(cls, widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,setter:Callable):
+    def add_ui_trigger(
+        cls,
+        widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,
+        setter: Callable,
+    ):
         def none_handler(v):
             return None if v == "None" else v
+
         if isinstance(widget, QLineEdit):
-            widget.textEdited.connect(lambda v, s=setter: s(none_handler(v)))
+            widget.textChanged.connect(lambda v, s=setter: s(none_handler(v)))
 
         elif isinstance(widget, QComboBox):
             widget.currentTextChanged.connect(setter)
@@ -66,11 +89,20 @@ class Settings(boreholeGUI.core.tool.Settings):
             widget.checkStateChanged.connect(
                 lambda checked, w=widget: setter(w.isChecked())
             )
+
     @classmethod
-    def add_paint_event(cls,widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,getter:Callable):
+    def update_widget(
+        cls,
+        widget: QLineEdit | QComboBox | QDoubleSpinBox | QCheckBox,
+        getter: Callable,
+    ):
         value = getter()
         if isinstance(widget, QLineEdit) and widget.text() != value:
-            widget.setText(str(value))
+            if value is None:
+                widget.setText("")
+            else:
+                widget.setText(str(value))
+
 
         elif isinstance(widget, QComboBox) and widget.currentText() != value:
             widget.setCurrentText(value)
@@ -79,7 +111,23 @@ class Settings(boreholeGUI.core.tool.Settings):
             widget.setValue(value)
 
         elif isinstance(widget, QCheckBox) and widget.isChecked() != value:
-            print(widget, value, getter)
+            if not isinstance(value, bool):
+                return
             widget.setChecked(value)
 
         widget.setToolTip(str(type(value)))
+
+    @classmethod
+    def add_float_validator(cls, widget: QLineEdit):
+        validator = QDoubleValidator(-1e6, 1e6, 4, parent=widget.parent())
+        validator.setNotation(QDoubleValidator.StandardNotation)
+        validator.setLocale(QLocale(QLocale.C))
+
+        widget.setValidator(validator)
+
+    @classmethod
+    def get_section_dict(cls, section: str) -> dict[str, Any]:
+        """
+        Returns a dictionary of all settings in the given section.
+        """
+        Appdata.section_to_dict(section)

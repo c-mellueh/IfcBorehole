@@ -79,7 +79,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def create_template(cls):
-        ifc_settings = cls.get_properties()
+        ifc_settings = cls.get_settings()
         filename = ifc_settings.file_name
         creator_name = ifc_settings.author_family_name
         organization_name = ifc_settings.organization_name
@@ -159,7 +159,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
     @classmethod
     def create_pset_dict(cls, row: pd.Series, ignored_collumns) -> dict[str, dict[str, Any]]:
         pset_dict = dict()
-        pset_base_name = cls.get_properties().pset_base_name
+        pset_base_name = cls.get_settings().pset_base_name
         for attribute_name, value in row.items():
             if attribute_name in ignored_collumns:
                 continue

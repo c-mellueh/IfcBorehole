@@ -7,9 +7,8 @@ import ifcopenshell
 import boreholeCreator
 import boreholeCreator.core.tool
 from boreholeCreator import settings, tool
-
-if TYPE_CHECKING:
-    from boreholeCreator.module.location.prop import LocationProperties
+from boreholeCreator.settings.appdata import Appdata as appdata_tool
+from boreholeCreator.module.location.prop import LocationProperties,LocationSettings,PROJECTED_CRS,MAPCONVERSION
 
 O = 0., 0., 0.
 X = 1., 0., 0.
@@ -19,13 +18,13 @@ MZ = 0.0, 0.0, -1.0
 
 
 class Location(boreholeCreator.core.tool.Location):
-    @classmethod
-    def get_settings(cls) -> Type[settings.Location]:
-        return settings.Location
 
     @classmethod
     def get_properties(cls) -> LocationProperties:
         return boreholeCreator.LocationProperties
+    @classmethod
+    def get_settings(cls) -> LocationSettings:
+        return boreholeCreator.LocationSettings
 
     @classmethod
     def create_ifcaxis2placement3D(cls, ifcfile, point=O, dir1=Z, dir2=X):
@@ -51,10 +50,14 @@ class Location(boreholeCreator.core.tool.Location):
 
     @classmethod
     def add_map_conversion(cls, ifcfile: ifcopenshell.file):
+        location_settings  = cls.get_settings()
         projected_crs = ifcfile.create_entity("IFCPROJECTEDCRS")
-        tool.Util.fill_entity_with_dict(projected_crs, cls.get_properties().projected_crs_data)
+        
+        projected_crs_dict = {"Name":location_settings.crs_name,"Description":location_settings.crs_description,"MapProjection":location_settings.map_projection,"MapZone":str(location_settings.map_zone)}
+        mapconversion_dict = appdata_tool.section_to_dict(MAPCONVERSION)
+        tool.Util.fill_entity_with_dict(projected_crs, projected_crs_dict)
         map_conversion = ifcfile.create_entity("IFCMAPCONVERSION")
         map_conversion.SourceCRS = tool.Ifc.get_geometric_representation_context()
         map_conversion.TargetCRS = projected_crs
-        tool.Util.fill_entity_with_dict(map_conversion, cls.get_properties().map_conversion_data)
+        tool.Util.fill_entity_with_dict(map_conversion, mapconversion_dict)
 

@@ -22,11 +22,12 @@ def add_settings_getter_setter(
     settings: Type[tool.Settings],
     geometry: Type[cli_tool.Geometry],
     ifc: Type[cli_tool.Ifc],
-    location: Type[cli_settings.Location],
+    location: Type[cli_tool.Location],
 ):
     ui = settings.get_widget().ui
     ifc_settings = ifc.get_settings()
     geometry_settings = geometry.get_settings()
+    location_settings = location.get_settings()
     # Geometry
     settings.add_setting(
         ui.sb_radius,
@@ -92,49 +93,40 @@ def add_settings_getter_setter(
     )
 
     # MapConversion
-    map_conversion_attributes = [
-        (ui.le_eastings, "Eastings", float),
-        (ui.le_northings, "Northings", float),
-        (ui.le_orthogonal_height, "OrthogonalHeight", float),
-        (ui.le_x_axis_abscissa, "XAxisAbscissa", float),
-        (ui.le_x_axis_ordinate, "XAxisOrdinate", float),
-        (ui.le_scale, "Scale", float),
+    location_attributes = [
+        (ui.le_eastings, "eastings", float),
+        (ui.le_northings, "northings", float),
+        (ui.le_orthogonal_height, "orthogonal_height", float),
+        (ui.le_x_axis_abscissa, "x_axis_abscissa", float),
+        (ui.le_x_axis_ordinate, "x_axis_ordinate", float),
+        (ui.le_scale, "scale", float),
+        (ui.cb_mapconversion, "mapconversion_is_activated", bool),
+        (ui.le_crs_name, "crs_name", str),
+        (ui.le_crs_description, "crs_description", str),
+        (ui.le_geodetic_datum, "geodetic_datum", str),
+        (ui.le_vertical_datum, "vertical_datum", str),
+        (ui.le_map_projection, "map_projection", str),
+        (ui.le_mapzone, "map_zone", str),
     ]
 
-    for widget, name, datatype in map_conversion_attributes:
+    for widget, name, data_type in location_attributes:
         settings.add_setting(
             widget,
-            lambda n=name: location.get_map_conversion_attribute(n),
-            lambda v, n=name: location.set_map_conversion_attribute(n, v),
-            datatype,
+            lambda n=name: getattr(location_settings, n),
+            lambda x, n=name: setattr(location_settings, n, x),
+            data_type,
         )
-    # ProjectedCRS
-    project_crs_attributes = [
-        (ui.le_crs_name, "Name", str),
-        (ui.le_crs_description, "Description", str),
-        (ui.le_geodetic_datum, "GeodeticDatum", str),
-        (ui.le_vertical_datum, "VerticalDatum", str),
-        (ui.le_map_projection, "MapProjection", str),
-        (ui.le_mapzone, "MapZone", str),
-    ]
-    for widget, name, datatype in project_crs_attributes:
-        settings.add_setting(
-            widget,
-            lambda n=name: location.get_projected_crs_attribute(n),
-            lambda v, n=name: location.set_projected_crs_attribute(n, v),
-            datatype,
-        )
-    # Checkbox Mapconversion
-    settings.add_setting(
-        ui.cb_mapconversion,
-        location.mapconversion_is_activated,
-        location.set_mapconversion_activated,
-        bool,
-    )
+
     ui.cb_mapconversion.checkStateChanged.connect(
         lambda: activate_mapconversion_toggled(settings)
     )
     activate_mapconversion_toggled(settings)
+
+    for widget, _, __, data_type in settings.get_settings_list():
+        if data_type == float and isinstance(widget, QLineEdit):
+            tool.Settings.add_float_validator(widget)
+
+    update_all_fields(settings)
 
 
 def activate_mapconversion_toggled(settings: Type[tool.Settings]):
@@ -144,9 +136,10 @@ def activate_mapconversion_toggled(settings: Type[tool.Settings]):
 
 def create_ui_triggers(settings: Type[tool.Settings]):
     for widget, getter, setter, _ in settings.get_settings_list():
+        print(widget, setter)
         settings.add_ui_trigger(widget, setter)
 
 
-def paint_event(settings: Type[tool.Settings]):
+def update_all_fields(settings: Type[tool.Settings]):
     for widget, getter, setter, _ in settings.get_settings_list():
-        settings.add_paint_event(widget, getter)
+        settings.update_widget(widget, getter)

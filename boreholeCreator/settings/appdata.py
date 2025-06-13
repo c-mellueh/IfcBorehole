@@ -33,9 +33,32 @@ class AppdataSetting:
 
     def __set__(self, instance, value: str):
         from boreholeCreator.settings.appdata import Appdata as appdata
+
+        if value is None or value == "None" or value == "":
+            appdata.remove_option(self.section, self.option)
+            return
+        if self.datatype == float and isinstance(value, str):
+            value = float(value.replace(",", "."))
+        elif self.datatype == int:
+            value = int(value)
         appdata.set_setting(self.section, self.option, value)
 
+def is_int(s: str) -> bool:
+    try:
+        # reject things like "3.0" by ensuring str(int(s)) matches
+        return str(int(s)) == s
+    except ValueError:
+        return False
 
+def is_float(s: str) -> bool:
+    if is_int(s):
+        return False
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+    
 class CustomConfigParser(ConfigParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,6 +80,10 @@ class CustomConfigParser(ConfigParser):
             return res
         if res.startswith("'") and res.endswith("'"):
             res = res.strip("'")
+        if is_int(res):
+            return int(res)
+        if is_float(res):
+            return float(res)
         return res
 
     def optionxform(self, optionstr):
@@ -70,6 +97,8 @@ class CustomConfigParser(ConfigParser):
         if isinstance(value, str):
             value = f"'{value}'"
         super().set(section, option, str(value))
+
+
 
 
 class Appdata:
@@ -133,6 +162,9 @@ class Appdata:
     @classmethod
     def set_setting(cls, section: str, option: str, value):
         config_parser = cls._get_config()
+        if value is None or value == "None":
+            cls.remove_option(section, option)
+            return
         config_parser.set(section, option, value)
         cls._write_config(config_parser)
 
@@ -166,6 +198,8 @@ class Appdata:
     def get_float_setting(cls, section: str, option: str, default=0) -> float:
         config_parser = cls._get_config()
         if config_parser.has_option(section, option):
+            if config_parser.get(section, option) == "None":
+                return None
             return config_parser.getfloat(section, option)
         cls.set_setting(section, option, default)
         return default
@@ -187,3 +221,12 @@ class Appdata:
         if not config_parser.has_section(section):
             return {}
         return {option: config_parser.get(section, option) for option in config_parser.options(section)}
+    
+    @classmethod
+    def remove_option(cls,section,option):
+        config_parser = cls._get_config()
+        if config_parser.has_option(section, option):
+            config_parser.remove_option(section, option)
+            cls._write_config(config_parser)
+        else:
+            logging.warning(f"Option '{option}' in section '{section}' does not exist.")
