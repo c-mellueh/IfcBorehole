@@ -7,7 +7,7 @@ def connect():
 
 
 def button_clicked(data_frame_table_tool):
-    core.button_clicked(data_frame_table_tool, tool.Popups)
+    core.button_clicked(data_frame_table_tool, tool.Popups,tool.Settings)
 
 
 def warning_clicked(data_frame_table_tool):

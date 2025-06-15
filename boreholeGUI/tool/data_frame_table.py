@@ -202,9 +202,11 @@ class DataFrameTable:
         return missing_column_names
 
     @classmethod
-    def create_select_dialog(cls):
+    def create_select_dialog(cls,path=None) -> ui.SelectDialog:
         dialog = ui.SelectDialog()
         dialog.ui.pushButton.clicked.connect(lambda: trigger.dataframe_select_file_clicked(dialog))
+        if path:
+            dialog.ui.lineEdit.setText(path)
         return dialog
 
     @classmethod

@@ -1,8 +1,8 @@
 PySide6
-SOMcreator
 pandas
 ifcopenshell
 numpy
 geopandas
 pyqtconsole
 fiona
+appdirs

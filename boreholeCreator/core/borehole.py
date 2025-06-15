@@ -6,9 +6,13 @@ from boreholeCreator import tool
 from boreholeCreator.module.borehole import prop
 
 
-def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum]):
+def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum],ifc:Type[tool.Ifc]):
     borehole_dataframe = borehole.get_dataframe()
     ifc_boreholes = list()
+    ifc.get_properties().borehole_templates = ifc.create_property_templates(borehole_dataframe)
+    stratum_dataframe = stratum.get_dataframe()
+    if len(stratum_dataframe) > 0:
+        ifc.get_properties().stratum_templates= ifc.create_property_templates(stratum_dataframe)
     for index, row in borehole_dataframe.iterrows():
         stratums = stratum.get_stratums_by_borehole_id(row[prop.ID])
         if stratums.empty:
@@ -22,11 +26,12 @@ def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum])
 
 def create_nested_borehole(borehole_row: pd.Series, stratum_df: pd.DataFrame, borehole: Type[tool.Borehole],
                            geometry: Type[tool.Geometry], ifc: Type[tool.Ifc], location: Type[tool.Location]):
+    use_primitive = geometry.get_settings().use_primitive
     pos = borehole.get_position(borehole_row)
     ifcfile = ifc.get_ifcfile()
     site_placement = location.get_site_placement()
     borehole_placement = location.create_ifclocalplacement(ifcfile, pos, relative_to=site_placement)
-    pyramid_shape = geometry.create_pyramid()
+    pyramid_shape = geometry.create_pyramid(use_primitive)
     ifc_borehole = ifc.create_borehole(borehole_row, borehole_placement, pyramid_shape)
     ifc_stratums = list()
     for stratum_index, stratum_row in stratum_df.iterrows():
@@ -38,8 +43,9 @@ def create_nested_borehole(borehole_row: pd.Series, stratum_df: pd.DataFrame, bo
 
 def create_unnested_borehole(borehole_row: pd.Series, borehole: Type[tool.Borehole], geometry: Type[tool.Geometry],
                              ifc: Type[tool.Ifc], location: Type[tool.Location]):
+    use_primitive = geometry.get_settings().use_primitive
     pos = borehole.get_position(borehole_row)
     placement = location.create_ifclocalplacement(ifc.get_ifcfile(), pos, relative_to=location.get_site_placement())
-    shape = geometry.create_cylinder(borehole_row[prop.NAME], borehole_row[prop.HEIGHT])
+    shape = geometry.create_cylinder(borehole_row[prop.NAME], borehole_row[prop.HEIGHT],use_primitive)
     ifc_borehole = ifc.create_borehole(borehole_row, placement, shape)
     return ifc_borehole

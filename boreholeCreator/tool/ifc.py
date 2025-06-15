@@ -8,21 +8,29 @@ from typing import Any, TYPE_CHECKING
 
 import ifcopenshell
 import ifcopenshell.api
+import ifcopenshell.api.pset_template
 import ifcopenshell.guid
 import pandas as pd
 
 import boreholeCreator
 import boreholeCreator.core.tool
 from boreholeCreator import tool
+from collections import defaultdict
 
 if TYPE_CHECKING:
-    from boreholeCreator.module.ifc.prop import IfcProperties
+    from boreholeCreator.module.ifc.prop import IfcProperties,IfcSettings
 
+from boreholeCreator.module.ifc.prop import AUTHOR,ORGANIZATION
+from boreholeCreator.settings.appdata import Appdata as appdata_tool
 
 class Ifc(boreholeCreator.core.tool.Ifc):
     @classmethod
     def get_properties(cls) -> IfcProperties:
         return boreholeCreator.IfcProperties
+
+    @classmethod
+    def get_settings(cls) -> IfcSettings:
+        return boreholeCreator.IfcSettings
 
     @classmethod
     def create_guid(cls):
@@ -57,8 +65,9 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def fill_person_and_org(cls):
-        creator_dict = cls.get_properties().creator
-        organization_dict = cls.get_properties().organization
+        creator_dict = appdata_tool.section_to_dict(AUTHOR)
+        organization_dict =appdata_tool.section_to_dict(ORGANIZATION)
+
         tool.Util.fill_entity_with_dict(cls.get_person(), creator_dict)
         tool.Util.fill_entity_with_dict(cls.get_organization(), organization_dict)
 
@@ -72,24 +81,23 @@ class Ifc(boreholeCreator.core.tool.Ifc):
 
     @classmethod
     def create_template(cls):
-        prop = cls.get_properties()
-        filename = prop.file_name
-        creator_name = prop.creator.get("Name")
-        organization_name = prop.organization.get("Name")
+        ifc_settings = cls.get_settings()
+        filename = ifc_settings.file_name
+        creator_name = ifc_settings.author_family_name
+        organization_name = ifc_settings.organization_name
         timestamp = int(time.time())
         timestring = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(timestamp))
-        center = tool.Location.get_properties().site_position
         template = f"""ISO-10303-21;
         HEADER;
         FILE_DESCRIPTION(('ViewDefinition[CoordinationView]'),'2;1');
-        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{prop.application_name}','{prop.application_name}','');
-        FILE_SCHEMA(('{prop.file_schema}'));
+        FILE_NAME('{filename}','{timestring}',('{creator_name}'),('{organization_name}'),'{ifc_settings.application_name}','{ifc_settings.application_name}','');
+        FILE_SCHEMA(('{ifc_settings.file_schema}'));
         ENDSEC;
         DATA;
-        #1=IFCPERSON($,$,'{creator_name}',$,$,$,$,$);
+        #1=IFCPERSON($,$,$,$,$,$,$,$);
         #2=IFCORGANIZATION($,'{organization_name}',$,$,$);
         #3=IFCPERSONANDORGANIZATION(#1,#2,$);
-        #4=IFCAPPLICATION(#2,'{prop.application_version}','{prop.application_name}','');
+        #4=IFCAPPLICATION(#2,'{ifc_settings.application_version}','{ifc_settings.application_name}','');
         #5=IFCOWNERHISTORY(#3,#4,$,.ADDED.,{timestamp},#3,#4,{timestamp});
         #6=IFCDIRECTION((1.,0.,0.));
         #7=IFCDIRECTION((0.,0.,1.));
@@ -105,7 +113,7 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         #17=IFCMEASUREWITHUNIT(IFCPLANEANGLEMEASURE(1.74532925199433E-2), #16);
         #18=IFCCONVERSIONBASEDUNIT(#12,.PLANEANGLEUNIT.,'DEGREE',#17);
         #19=IFCUNITASSIGNMENT((#13,#14,#15,#18));
-        #20=IFCPROJECT('{prop.project_gobal_id}',#5,'{prop.project_name}',$,$,$,$,(#10),#19);
+        #20=IFCPROJECT('{ifc_settings.project_gobal_id}',#5,'{ifc_settings.project_name}',$,$,$,$,(#10),#19);
         ENDSEC;
         END-ISO-10303-21;
         """
@@ -147,40 +155,96 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         return cls._get_ifc_entity("IfcProject","project")
 
     @classmethod
-    def get_geometric_representation_context(cls):
+    def get_geometric_representation_sub_context(cls):
         return cls._get_ifc_entity("IFCGEOMETRICREPRESENTATIONSUBCONTEXT","geometric_representation_context")
-
+    @classmethod
+    def get_geometric_representation_context(cls):
+        return cls._get_ifc_entity("IFCGEOMETRICREPRESENTATIONCONTEXT","geometric_representation_context")
+    
+    @classmethod
+    def split_column_name(cls,attribute_name) ->tuple[str,str]:
+        pset_base_name= cls.get_settings().pset_base_name
+        name = str(attribute_name).split(":")
+        if len(name) < 2:
+            name = [pset_base_name, attribute_name]
+        elif len(name) > 2:
+            logging.warning(
+                f"Attributename '{attribute_name}' contains too much ':'  to be splitted correctly -> take first 2 values")
+            name = name[:2]
+        return tuple(name)
     @classmethod
     def create_pset_dict(cls, row: pd.Series, ignored_collumns) -> dict[str, dict[str, Any]]:
         pset_dict = dict()
-        pset_base_name = cls.get_properties().pset_base_name
         for attribute_name, value in row.items():
             if attribute_name in ignored_collumns:
                 continue
             if pd.isna(value):
                 value = None
-            name = str(attribute_name).split(":")
-            if len(name) < 2:
-                name = [pset_base_name, attribute_name]
-            elif len(name) > 2:
-                logging.warning(
-                    f"Attributename '{attribute_name}' contains too much ':'  to be splitted correctly -> take first 2 values")
-                name = name[:2]
+            name = cls.split_column_name(attribute_name)
             if pset_dict.get(name[0]) is None:
                 pset_dict[name[0]] = dict()
+            if isinstance(value,pd.Timestamp):
+                value = cls.get_ifcfile().create_entity("IfcDateTime",str(value))
             pset_dict[name[0]][name[1]] = value
         return pset_dict
+    
+    @classmethod
+    def pd_datatype_to_ifc_dataype(cls,dtype):
+        if pd.api.types.is_string_dtype(dtype):
+            return "IfcLabel"
+        elif pd.api.types.is_float_dtype(dtype):
+            return "IfcReal"
+        elif pd.api.types.is_integer_dtype(dtype):
+            return "IfcInteger"
+        elif pd.api.types.is_datetime64_any_dtype(dtype):
+            return "IfcDateTime"
+        else:
+            print(f"Datatype{dtype} not known")
+            return "IfcLabel"
 
     @classmethod
-    def add_attributes(cls, entity: ifcopenshell.entity_instance, data: dict[str, dict[str, Any]]):
+    def create_property_templates(cls,dataframe:pd.DataFrame):
+        groups = defaultdict(list)
+        for col,dtype in zip(dataframe.columns, dataframe.dtypes):
+            name = cls.split_column_name(col)
+            groups[name[0]].append((name,dtype))
+        file = cls.get_ifcfile()
+        templates = dict()
+        
+        for pset_name,property_list in groups.items():
+            pset_template = ifcopenshell.api.pset_template.add_pset_template(file,pset_name,"PSET_OCCURRENCEDRIVEN","IfcObject")
+            for property_name,data_type in property_list:
+                ifc_datatype = cls.pd_datatype_to_ifc_dataype(data_type)
+                ifcopenshell.api.pset_template.add_prop_template(file,pset_template,property_name[1],template_type="P_SINGLEVALUE",primary_measure_type=ifc_datatype)
+            templates[pset_name]=pset_template
+            relationship = file.create_entity("IfcRelDefinesByTemplate",cls.create_guid())
+            relationship.RelatingTemplate = pset_template
+            relationship.RelatedPropertySets = []
+        return templates
+    
+    
+    @classmethod
+    def get_borehole_templates(cls):
+        return cls.get_properties().borehole_templates
+    
+    @classmethod
+    def get_stratum_templates(cls):
+        return cls.get_properties().stratum_templates
+
+    @classmethod
+    def add_attributes(cls, entity: ifcopenshell.entity_instance, data: dict[str, dict[str, Any]],pset_template:dict[str,ifcopenshell.entity_instance]):
         ifcfile = cls.get_ifcfile()
         owner_history = cls.get_owner_history()
+
         for pset_name, attribute_dict in data.items():
             pset = ifcopenshell.api.run("pset.add_pset", ifcfile, product=entity, name=pset_name)
-            relation = pset.DefinesOccurrence[0]
             # relation.OwnerHistory = owner_history
             # pset.OwnerHistory = owner_history
-            ifcopenshell.api.run("pset.edit_pset", ifcfile, pset=pset, properties=attribute_dict)
+            template = pset_template.get(pset_name)
+            relation = template.Defines[0]
+            relation.RelatedPropertySets  = list(relation.RelatedPropertySets)+[pset]
+
+            ifcopenshell.api.run("pset.edit_pset", ifcfile, pset=pset, properties=attribute_dict,pset_template =template)
 
     @classmethod
     def create_borehole(cls, row: pd.Series, borehole_placement, shape):
@@ -199,7 +263,8 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         optional_column_names = tool.Borehole.get_optional_column_names()
         required_column_names = tool.Borehole.get_required_column_names()
         data = cls.create_pset_dict(row, required_column_names + optional_column_names)
-        cls.add_attributes(ifcborehole, data)
+        
+        cls.add_attributes(ifcborehole, data,cls.get_borehole_templates())
         return ifcborehole
 
     @classmethod
@@ -222,7 +287,8 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         required_column_names = tool.Stratum.get_required_column_names()
         optional_column_names = tool.Stratum.get_optional_column_names()
         pset_dict = cls.create_pset_dict(row, required_column_names + optional_column_names)
-        cls.add_attributes(stratum, pset_dict)
+        
+        cls.add_attributes(stratum, pset_dict,cls.get_stratum_templates())
         return stratum
 
     @classmethod

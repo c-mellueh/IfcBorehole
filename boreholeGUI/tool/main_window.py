@@ -110,10 +110,6 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
         return cls.get_properties().step_list
 
     @classmethod
-    def set_export_path(cls, text: str):
-        cls.get_ui().le_export_path.setText(text)
-
-    @classmethod
     def get_export_path(cls) -> str:
         return cls.get_ui().le_export_path.text()
 

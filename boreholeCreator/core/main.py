@@ -25,7 +25,7 @@ def create_file(output_path, ifc: Type[tool.Ifc], location: Type[tool.Location],
     logging.info("Create IFC-Template")
     ifc.reset()
     file = ifc.get_ifcfile()
-    if location.get_settings().mapconversion_is_activated():
+    if location.get_settings().mapconversion_is_activated:
         location.add_map_conversion(file)
 
     ifc.fill_person_and_org()
