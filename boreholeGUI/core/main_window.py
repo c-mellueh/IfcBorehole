@@ -73,3 +73,6 @@ def run_clicked(
     import boreholeCreator
 
     boreholeCreator.create_file(path)
+    popups.create_info_popup(
+        "Export Successful", f"File exported to '{path}'"
+    )

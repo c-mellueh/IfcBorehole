@@ -3,16 +3,10 @@
 block_cipher = None
 added_files = [
     ('boreholeCreator', 'boreholeCreator'),
-    (r'c:\Users\chris\Programmieren\IfcBorehole\.venv\Lib\site-packages\ifcopenshell\util', 'ifcopenshell/util')
+    (r'c:\Users\chris\Programmieren\IfcBorehole\.venv\Lib\site-packages\ifcopenshell\util', 'ifcopenshell/util'),
+    ('boreholeGUI/icons','boreholeGUI/icons')
 ]
-hi = ['PySide6',
-'pandas',
-'ifcopenshell',
-'numpy',
-'geopandas',
-'pyqtconsole',
-'fiona',
-'appdirs','ifcopenshell','ifcopenshell.util','ifcopenshell.util.element']
+hi = []
 a = Analysis(
     ['boreholeGUI\\__main__.py'],
     pathex=[],
@@ -38,13 +32,13 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='boreholeGUI/icons/icon.ico'
+    icon='boreholeGUI/icons/icon.png'
 )
 coll = COLLECT(
     exe,
