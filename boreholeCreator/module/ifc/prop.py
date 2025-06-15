@@ -19,7 +19,8 @@ class IfcProperties:
     site: ifcopenshell.entity_instance = None
     ifc_person: ifcopenshell.entity_instance = None
     ifc_organization: ifcopenshell.entity_instance = None
-    
+    borehole_templates = dict()
+    stratum_templates = dict()
 class IfcSettings:
     """Settings for the IFC properties."""
     application_name = AppdataSetting(IFC, "application_name", str, "IfcBorehole")

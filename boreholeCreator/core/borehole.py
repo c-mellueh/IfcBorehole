@@ -6,9 +6,13 @@ from boreholeCreator import tool
 from boreholeCreator.module.borehole import prop
 
 
-def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum]):
+def create_boreholes(borehole: Type[tool.Borehole], stratum: Type[tool.Stratum],ifc:Type[tool.Ifc]):
     borehole_dataframe = borehole.get_dataframe()
     ifc_boreholes = list()
+    ifc.get_properties().borehole_templates = ifc.create_property_templates(borehole_dataframe)
+    stratum_dataframe = stratum.get_dataframe()
+    if len(stratum_dataframe) > 0:
+        ifc.get_properties().stratum_templates= ifc.create_property_templates(stratum_dataframe)
     for index, row in borehole_dataframe.iterrows():
         stratums = stratum.get_stratums_by_borehole_id(row[prop.ID])
         if stratums.empty:
