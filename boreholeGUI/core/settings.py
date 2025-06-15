@@ -16,7 +16,9 @@ def add_widget_to_mainwindow(
 ):
     widget = settings.get_widget()
     main_window.add_step("Settings", widget)
-
+    settings.signaller.update_requested.connect(
+        lambda: update_all_fields(settings)
+    )
 
 def add_settings_getter_setter(
     settings: Type[tool.Settings],

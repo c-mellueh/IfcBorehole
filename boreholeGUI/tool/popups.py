@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import pandas as pd
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -80,3 +80,13 @@ class Popups(boreholeGUI.core.tool.Popups):
         icon = get_icon()
         msg_box.setWindowIcon(icon)
         msg_box.exec()
+
+    @classmethod
+    def update_dropdown(cls,dialog, path: str):
+        if path.endswith("xlsx"):
+            dialog.ui.comboBox.show()
+            sheet_names = pd.ExcelFile(path).sheet_names
+            dialog.ui.comboBox.clear()
+            dialog.ui.comboBox.addItems(sheet_names)
+        else:
+            dialog.ui.comboBox.hide()

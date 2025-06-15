@@ -19,19 +19,20 @@ def create_main_window(
     main_window.create_trigger()
     mw.show()
     main_window.hide_terminal()
+    path_settings = settings.get_path_settings()
     settings.add_setting(
         main_window.get_ui().le_export_path,
-        lambda: getattr(settings, "ifc_export_path"),
-        lambda x: setattr(settings, "ifc_export_path", x),
+        lambda: getattr(path_settings, "ifc_export_path"),
+        lambda x: setattr(path_settings, "ifc_export_path", x),
         str,
     )
     settings.add_ui_trigger(
         main_window.get_ui().le_export_path,
-        lambda x: setattr(settings, "ifc_export_path", x),
+        lambda x: setattr(path_settings, "ifc_export_path", x),
     )
     settings.update_widget(
         main_window.get_ui().le_export_path,
-        lambda: getattr(settings, "ifc_export_path"),
+        lambda: getattr(path_settings, "ifc_export_path"),
     )
 
 
@@ -43,8 +44,8 @@ def select_ifc_clicked(
     path = popups.get_save_path("IFC  (*.ifc);;all (*.*)", main_window.get())
     if not path:
         return
-    settings.ifc_export_path = path
-
+    settings.get_path_settings().ifc_export_path = path
+    main_window.get_ui().le_export_path.setText(settings.get_path_settings().ifc_export_path)
 
 def run_clicked(
     main_window: Type[tool.MainWindow],
@@ -54,7 +55,7 @@ def run_clicked(
     popups: Type[tool.Popups],
     ifc: Type[cli_tool.Ifc],
 ):
-    path = settings.ifc_export_path
+    path = settings.get_path_settings().ifc_export_path
     if not main_window.is_file_path_valid(path):
         popups.create_warning_popup(
             "Invalid Path", f"Path 'path' is invalid, please check"

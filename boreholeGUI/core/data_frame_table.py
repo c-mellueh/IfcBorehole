@@ -18,11 +18,19 @@ FILE_TYPES = [
 ]
 
 
-def button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]):
-    dialog = data_frame_table.create_select_dialog()
+def button_clicked(
+    data_frame_table: Type[tool.Borehole | tool.Stratum],
+    popups: Type[tool.Popups],
+    settings: Type[tool.Settings],
+):
+    old_path = settings.get_path_settings().import_path
+    dialog = data_frame_table.create_select_dialog(old_path)
+    if isinstance(old_path, str) and old_path.endswith("xlsx"):
+        popups.update_dropdown(dialog, old_path)
     if not dialog.exec():
         return
     path, sheet_name = dialog.ui.lineEdit.text(), dialog.ui.comboBox.currentText()
+    settings.get_path_settings().import_path = path
     index = None
     for name, file_type, n in FILE_TYPES:
         if path.endswith(file_type):
@@ -35,7 +43,9 @@ def button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups:
     elif index == 2:
         df = pd.read_csv(path)
     else:
-        popups.create_warning_popup(f"Fileformat '{path.split('.')[-1]}' not supported'")
+        popups.create_warning_popup(
+            f"Fileformat '{path.split('.')[-1]}' not supported'"
+        )
         return
     data_frame_table.set_dataframe(df)
 
@@ -43,22 +53,30 @@ def button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups:
 def paint_table(data_frame_table: Type[tool.Borehole | tool.Stratum]):
     missing_required_column_names = data_frame_table.get_missing_required_columns()
     if missing_required_column_names:
-        missing_required_column_names = '\n'.join([f"'{x}'" for x in missing_required_column_names])
+        missing_required_column_names = "\n".join(
+            [f"'{x}'" for x in missing_required_column_names]
+        )
         data_frame_table.set_warning(
-            f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_required_column_names}")
+            f"Folgende Spalten müssen ergänzt/umbenannt werden: \n{missing_required_column_names}"
+        )
     else:
         data_frame_table.set_warning(None)
 
     missing_optional_column_names = data_frame_table.get_missing_optional_columns()
     if missing_optional_column_names:
-        missing_optional_column_names = '\n'.join([f"'{x}'" for x in missing_optional_column_names])
+        missing_optional_column_names = "\n".join(
+            [f"'{x}'" for x in missing_optional_column_names]
+        )
         data_frame_table.set_info(
-            f"Folgende Spalten können ergänzt/umbenannt werden: \n{missing_optional_column_names}")
+            f"Folgende Spalten können ergänzt/umbenannt werden: \n{missing_optional_column_names}"
+        )
     else:
         data_frame_table.set_info(None)
 
 
-def warning_button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]):
+def warning_button_clicked(
+    data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]
+):
     warning = data_frame_table.get_warning()
     if not warning:
         return
@@ -66,7 +84,9 @@ def warning_button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum],
     pop.exec()
 
 
-def info_button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]):
+def info_button_clicked(
+    data_frame_table: Type[tool.Borehole | tool.Stratum], popups: Type[tool.Popups]
+):
     info = data_frame_table.get_info()
     if not info:
         return
@@ -74,25 +94,23 @@ def info_button_clicked(data_frame_table: Type[tool.Borehole | tool.Stratum], po
     pop.exec()
 
 
-def header_context_menu_requested(pos: QPoint, data_frame_table: Type[tool.Borehole | tool.Stratum]):
+def header_context_menu_requested(
+    pos: QPoint, data_frame_table: Type[tool.Borehole | tool.Stratum]
+):
     header = data_frame_table.get_table_view().horizontalHeader()
     menu = data_frame_table.create_header_context_menu(pos)
     menu.exec(header.mapToGlobal(pos))
 
 
 def dataframe_select_file_clicked(dialog: ui.SelectDialog, popups: Type[tool.Popups]):
-    file_type = ";;".join([f"{name} (*.{file})" for name, file, _ in FILE_TYPES + [("all", "*", 0)]])
+    file_type = ";;".join(
+        [f"{name} (*.{file})" for name, file, _ in FILE_TYPES + [("all", "*", 0)]]
+    )
     path = popups.get_open_path(file_type, dialog)
     if not path:
         return
     dialog.ui.lineEdit.setText(path)
-    if path.endswith("xlsx"):
-        dialog.ui.comboBox.show()
-        sheet_names = pd.ExcelFile(path).sheet_names
-        dialog.ui.comboBox.clear()
-        dialog.ui.comboBox.addItems(sheet_names)
-    else:
-        dialog.ui.comboBox.hide()
+    popups.update_dropdown(dialog, path)
 
 
 def request_tooltips(data_frame_table: Type[tool.Borehole | tool.Stratum]):

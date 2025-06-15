@@ -4,28 +4,29 @@ from typing import Any, Callable, TYPE_CHECKING
 
 from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit
 from PySide6.QtGui import QDoubleValidator
-from PySide6.QtCore   import QLocale
+from PySide6.QtCore   import QLocale,Signal,QObject
 
 from boreholeGUI import tool
 
 if TYPE_CHECKING:
-    from boreholeGUI.module.settings.prop import SettingsProperties
+    from boreholeGUI.module.settings.prop import SettingsProperties,PathSettings
 import boreholeGUI.core.tool
 from boreholeGUI.module.settings import ui
 from boreholeCreator.settings.appdata import AppdataSetting,Appdata
 
 PATH_SETTINGS = "paths"
 
+class Signaller(QObject):
+    update_requested = Signal() 
 
 class Settings(boreholeGUI.core.tool.Settings):
-    ifc_export_path = AppdataSetting(
-        PATH_SETTINGS, "ifc_export_path", str, "~/export.ifc"
-    )
-
+    signaller = Signaller()
     @classmethod
     def get_properties(cls) -> SettingsProperties:
         return boreholeGUI.SettingsProperties
-
+    @classmethod
+    def get_path_settings(cls) -> PathSettings:
+        return boreholeGUI.PathSettings
     @classmethod
     def get_widget(cls) -> ui.Widget:
         if cls.get_properties().widget is None:
