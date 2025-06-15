@@ -123,11 +123,6 @@ def add_settings_getter_setter(
         lambda: activate_mapconversion_toggled(settings)
     )
     activate_mapconversion_toggled(settings)
-
-    for widget, _, __, data_type in settings.get_settings_list():
-        if data_type == float and isinstance(widget, QLineEdit):
-            tool.Settings.add_float_validator(widget)
-
     update_all_fields(settings)
 
 

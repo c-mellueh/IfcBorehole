@@ -119,14 +119,6 @@ class Settings(boreholeGUI.core.tool.Settings):
         widget.setToolTip(str(type(value)))
 
     @classmethod
-    def add_float_validator(cls, widget: QLineEdit):
-        validator = QDoubleValidator(-1e6, 1e6, 4, parent=widget.parent())
-        validator.setNotation(QDoubleValidator.StandardNotation)
-        validator.setLocale(QLocale(QLocale.C))
-
-        widget.setValidator(validator)
-
-    @classmethod
     def get_section_dict(cls, section: str) -> dict[str, Any]:
         """
         Returns a dictionary of all settings in the given section.

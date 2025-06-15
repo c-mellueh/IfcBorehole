@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Type
-
+import os
 if TYPE_CHECKING:
     from boreholeGUI import tool
     from boreholeGUI.module.data_frame_table import ui
@@ -24,6 +24,7 @@ def button_clicked(
     settings: Type[tool.Settings],
 ):
     old_path = settings.get_path_settings().import_path
+    old_path = old_path if os.path.exists(old_path) else None
     dialog = data_frame_table.create_select_dialog(old_path)
     if isinstance(old_path, str) and old_path.endswith("xlsx"):
         popups.update_dropdown(dialog, old_path)
