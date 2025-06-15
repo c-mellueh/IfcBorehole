@@ -7,3 +7,4 @@ class GeometryProperties:
 
 class GeometrySettings:
     radius = AppdataSetting(GEOMETRY, "radius", float, 1.0)
+    use_primitive = AppdataSetting(GEOMETRY, "use_primitive", bool, False)

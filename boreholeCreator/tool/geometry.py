@@ -29,7 +29,7 @@ class Geometry(boreholeCreator.core.tool.Geometry):
 
     @classmethod
     def get_context(cls) -> ifcopenshell.entity_instance:
-        return tool.Ifc.get_geometric_representation_context()
+        return tool.Ifc.get_geometric_representation_sub_context()
 
     @classmethod
     def create_ifcextrudedareasolid(cls, ifcfile: ifcopenshell.file, surface, ifcaxis2placement, extrude_dir,

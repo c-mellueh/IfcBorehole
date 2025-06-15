@@ -1,7 +1,7 @@
 from PySide6 import QtWidgets
 
 from . import trigger
-from .widget import Ui_Form
+from .qt.ui_Widget import Ui_Form
 
 
 class Widget(QtWidgets.QWidget):

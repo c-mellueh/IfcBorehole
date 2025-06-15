@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'Widget.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.0
+## Created by: Qt User Interface Compiler version 6.9.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(1001, 486)
+        Form.resize(973, 510)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.tabWidget = QTabWidget(Form)
@@ -158,6 +158,23 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(13, QFormLayout.ItemRole.FieldRole, self.sb_radius)
 
+        self.label = QLabel(self.tab)
+        self.label.setObjectName(u"label")
+
+        self.formLayout.setWidget(15, QFormLayout.ItemRole.LabelRole, self.label)
+
+        self.cb_primitive = QCheckBox(self.tab)
+        self.cb_primitive.setObjectName(u"cb_primitive")
+
+        self.formLayout.setWidget(15, QFormLayout.ItemRole.FieldRole, self.cb_primitive)
+
+        self.line_4 = QFrame(self.tab)
+        self.line_4.setObjectName(u"line_4")
+        self.line_4.setFrameShape(QFrame.Shape.HLine)
+        self.line_4.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.formLayout.setWidget(14, QFormLayout.ItemRole.SpanningRole, self.line_4)
+
         self.tabWidget.addTab(self.tab, "")
         self.tab_3 = QWidget()
         self.tab_3.setObjectName(u"tab_3")
@@ -170,7 +187,7 @@ class Ui_Form(object):
 
         self.cb_mapconversion = QCheckBox(self.tab_3)
         self.cb_mapconversion.setObjectName(u"cb_mapconversion")
-        self.cb_mapconversion.setLayoutDirection(Qt.LeftToRight)
+        self.cb_mapconversion.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
         self.formLayout_3.setWidget(0, QFormLayout.ItemRole.FieldRole, self.cb_mapconversion)
 
@@ -349,6 +366,8 @@ class Ui_Form(object):
         self.cb_file_schema.setCurrentText(QCoreApplication.translate("Form", u"IFC4X3_ADD2", None))
         self.la_default_pset_name.setText(QCoreApplication.translate("Form", u"Default Pset Name", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"BoreHole Radius", None))
+        self.label.setText(QCoreApplication.translate("Form", u"Use Primite Geometry", None))
+        self.cb_primitive.setText("")
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Form", u"General", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Activate IfcMapConversion", None))
         self.cb_mapconversion.setText("")

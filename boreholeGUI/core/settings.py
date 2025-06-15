@@ -30,6 +30,7 @@ def add_settings_getter_setter(
     ifc_settings = ifc.get_settings()
     geometry_settings = geometry.get_settings()
     location_settings = location.get_settings()
+    
     # Geometry
     settings.add_setting(
         ui.sb_radius,
@@ -37,7 +38,12 @@ def add_settings_getter_setter(
         lambda x: setattr(geometry_settings, "radius", x),
         float,
     )
-
+    settings.add_setting(
+        ui.cb_primitive,
+        lambda: getattr(geometry_settings, "use_primitive"),
+        lambda x: setattr(geometry_settings, "use_primitive", x),
+        bool,
+    )
     # Application
     settings.add_setting(
         ui.le_application_name,

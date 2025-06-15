@@ -153,9 +153,11 @@ class Ifc(boreholeCreator.core.tool.Ifc):
         return cls._get_ifc_entity("IfcProject","project")
 
     @classmethod
-    def get_geometric_representation_context(cls):
+    def get_geometric_representation_sub_context(cls):
         return cls._get_ifc_entity("IFCGEOMETRICREPRESENTATIONSUBCONTEXT","geometric_representation_context")
-
+    @classmethod
+    def get_geometric_representation_context(cls):
+        return cls._get_ifc_entity("IFCGEOMETRICREPRESENTATIONCONTEXT","geometric_representation_context")
     @classmethod
     def create_pset_dict(cls, row: pd.Series, ignored_collumns) -> dict[str, dict[str, Any]]:
         pset_dict = dict()
