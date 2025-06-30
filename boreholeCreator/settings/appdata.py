@@ -107,10 +107,12 @@ class Appdata:
     def create_directory(cls, path: os.PathLike):
         cur_path = list()
         split_path = str(path).split(os.sep)
-        for path in split_path:
-            cur_path.append(path)
+        for iter_path in split_path:
+            #if iter_path == "":
+            #    continue
+            cur_path.append(iter_path)
             p = "/".join(cur_path)
-            if not os.path.exists(p):
+            if not os.path.exists(p) and iter_path !="":
                 os.mkdir(p)
 
     @classmethod

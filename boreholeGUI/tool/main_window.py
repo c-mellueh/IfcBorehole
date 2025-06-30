@@ -61,13 +61,22 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
             console.show()
 
     @classmethod
+    def os_is_windows(cls) ->  bool:
+        return os.name == "nt"
+              
+
+    @classmethod
     def hide_terminal(cls):
+        if not cls.os_is_windows():
+            return
         hWnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hWnd != 0:
             ctypes.windll.user32.ShowWindow(hWnd, 0)
 
     @classmethod
     def show_terminal(cls):
+        if not cls.os_is_windows():
+            return
         console_window = ctypes.windll.kernel32.GetConsoleWindow()
         if console_window != 0:
             # Check if the console is visible
@@ -75,6 +84,8 @@ class MainWindow(boreholeGUI.core.tool.MainWindow):
 
     @classmethod
     def toggle_terminal(cls):
+        if not cls.os_is_windows():
+            return
         active_window = cls.get_properties().application.activeWindow()
         hWnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hWnd == 0:
