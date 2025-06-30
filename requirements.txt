@@ -6,3 +6,4 @@ geopandas
 pyqtconsole
 fiona
 appdirs
+openpyxl
